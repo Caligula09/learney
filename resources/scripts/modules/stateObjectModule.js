@@ -1,4 +1,5 @@
-import renderFunction from './renderModule.js';
+import renderObject from './renderModule.js';
+import { inputCollector } from './renderModule.js';
 
 let subArray = [];
 let sessionArray = [];
@@ -38,6 +39,7 @@ export const state = {
                 throw Error('must enter valid state from state list to set state');
             }
         }
+        renderObject.renderStates(this._state);
     },
     session: {
         _subject: subArray[0],
@@ -173,4 +175,33 @@ export const state = {
     }
 }
 
-export {subArray, sessionArray, renderFunction};
+const eventListeners = [
+    {
+        target: "#startSession",
+        event: "click",
+        handle: () => {
+            state.session.breaks = inputCollector.breakInput();
+            state.session.sessionLength = inputCollector.sessionLength();
+            state.session.totalLength = inputCollector.totalLength();
+            state.state = 'session';
+            console.log('navigate to session');
+        }
+    },
+    {
+        target: "#endSession",
+        event: "click",
+        handle: () => {
+            state.state = 'home';
+            console.log('navigate to home');
+        }
+    }
+    /*
+    ,{
+        target: "",
+        event: "",
+        handle: () => {}
+    }
+    */
+];
+
+export {subArray, sessionArray, renderObject, eventListeners };

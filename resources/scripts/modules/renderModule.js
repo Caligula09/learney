@@ -1,7 +1,4 @@
 // DOM elements
-
-import { subArray } from "./stateObjectModule";
-
 //div & container & element selectors
 const div1 = document.getElementById('div1'); //progress bar and timer div in session page
 const div2 = document.getElementById('div2'); //state div in session page (displays study/break)
@@ -32,6 +29,10 @@ const endSessionBtn = document.getElementById('endSession');
 const nextSessionBtn = document.getElementById('nextSession');
 const skipSessionBtn = document.getElementById('skipSession');
 const alertOkBtn = document.getElementById('alertOkButton');
+
+const totalHoursInput = document.getElementById('sessionHourInput');
+const totalMinsInput = document.getElementById('sessionMinInput');
+const sessionMinsInput = document.getElementById('sessionLengthInput');
 
 const breaksYes = document.getElementById('breaksYes');
 const inSessionTaskAdder = document.getElementById('inSessionTaskAdder'); //  ?
@@ -140,29 +141,49 @@ const generateTaskLi = (ul, task, sub) => {
 
 
 //function
-let stateCopy = state;
+const renderObject = {
 
-const renderStates = (state) => {
-    if (state.state === 'home'){
-        console.log('home');
-        //only show state's div(s)
-        divs.forEach(div=>div.classList.add('hidden'));
-        homeDivs.forEach(div=>div.classList.remove('hidden'));
+    renderStates(state){
+        if (state === 'home'){
+            console.log('home');
+            //only show state's div(s)
+            divs.forEach(div=>div.classList.add('hidden'));
+            homeDivs.forEach(div=>div.classList.remove('hidden'));
 
-    } else if (state.state === 'session'){
-        console.log('session');
-        //only show state's div(s)
-        divs.forEach(div=>div.classList.add('hidden'));
-        sessionDivs.forEach(div=>div.classList.remove('hidden'));
+        } else if (state === 'session'){
+            console.log('session');
+            //only show state's div(s)
+            divs.forEach(div=>div.classList.add('hidden'));
+            sessionDivs.forEach(div=>div.classList.remove('hidden'));
 
-    } else if (state.state === 'subList'){
-        console.log('subList');
-        //only show state's div(s)
-        divs.forEach(div=>div.classList.add('hidden'));
-        div6extended.classList.remove('hidden');
-        //generate subs with tasks
-        subArray.forEach(sub=>subGenFunction(sub,document.getElementById('subUlDivExtended'), true));
+        } else if (state === 'subList'){
+            console.log('subList');
+            //only show state's div(s)
+            divs.forEach(div=>div.classList.add('hidden'));
+            div6extended.classList.remove('hidden');
+            //generate subs with tasks
+            subArray.forEach(sub=>subGenFunction(sub,document.getElementById('subUlDivExtended'), true));
+        }
+    },
+
+}
+
+export const inputCollector = {
+    breakInput(){
+        if(breaksYes.checked){
+            return true;
+        } else {
+            return false;
+        }
+    },
+    sessionLength(){
+        return sessionMinsInput.value * 60;
+    },
+    totalLength(){
+        return totalHoursInput * 3600 + totalMinsInput * 60;
     }
 }
+
+export default renderObject; // export to stateObjectModule.js
 
 //export default renderFunction;

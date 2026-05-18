@@ -41,11 +41,11 @@
                 -->
                 <h2 id="stateH1"></h2>
             </div>
-            <div id="div3">
+            <div id="div3" class="hidden">
                 <h2 id="dateH1"></h2>
                 <h2 id="timeH1"></h2>
             </div>
-            <div id="div4"><!--
+            <div id="div4" class="hidden"><!--
                 <h2 data-i18n="new_session"></h2>
                 <div id="newEnergy">
                     <h2 data-i18n="energy_h2"></h2>
@@ -79,7 +79,7 @@
                 </div>
                 <button id="startSession" data-i18n="start_session"></button>
             </div>
-            <div id="div5">
+            <div id="div5" class="hidden">
                 <h2 id="addSub" data-i18n="new_add_sub"></h2>
                 <input type="text" id="subjectInput" data-i18n-placeholder="enter_sub" list="subjectOptions">
                 <datalist id="subjectOptions">
@@ -101,7 +101,7 @@
                 <input type="range" id="confidenceInput" min="1" max="5" value="3">
                 <button id="addNewSub" data-i18n="new_add"></button>
             </div>
-            <div id="div6">
+            <div id="div6" class="hidden">
                 <svg xmlns="http://www.w3.org/2000/svg" id="expandSubList" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M260-260h150q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H230q-12.75 0-21.37-8.63Q200-217.25 200-230v-180q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v150Zm440-440H550q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h180q12.75 0 21.38 8.62Q760-742.75 760-730v180q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-150Z"/></svg>
                 <h2 data-i18n="your_subs"></h2>
                 <div id="subUlDiv">
@@ -149,6 +149,6 @@
         <script src="./resources/scripts/translationScript.js"></script>
         <script src="./resources/scripts/colorScript.js"></script>
         <script src="./resources/scripts/menuScript.js"></script>
-        <script type="module" src="./resources/scripts/newScript.js"></script>
+        <script type="module" src="./resources/scripts/combinedScript.js"></script>
     </body>
 </html>
