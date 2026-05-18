@@ -10,6 +10,8 @@ import { subGenFunction } from './modules/renderModule.js';
 console.log(state);
 console.log(eventListeners);
 
+const clockInterval = setInterval(renderObject.renderClock, 1000);
+
 subArrObj.subArray = JSON.parse(localStorage.getItem('subArray'));
 console.log(subArrObj.subArray)
 subGenFunction(subArrObj.subArray, document.getElementById('subUl'), false);

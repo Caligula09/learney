@@ -10,6 +10,7 @@ const intervalFunction = () => {
         if(this.interval._intervalState === 0 || this.interval.pauseInterval === true || this.interval.skipInterval === true){ //check for condition to finish
             clearInterval(this.interval.sessionInterval);
             this.interval.active = false;
+            renderObject.sessionInterval();
         }
     }, 1000);
 }
@@ -51,7 +52,7 @@ export const state = {
         _totalLength: 0,     //total length in secs
         interval: {
             sessionInterval: null,  // key for interval
-            _intervalState: null,    //countdown key
+            _intervalState: 0,    //countdown key
             pauseInterval: false,   //pause
             skipInterval: false,     //skip
             active: false,
@@ -123,6 +124,7 @@ export const state = {
             } else if (this.sessionsDone === this.sessionAmount){
                 this.finish();
             }
+            localStorage.setItem("subArray",JSON.stringify(subArrObj.subArray));
         },
 
         // only call step function  
@@ -161,6 +163,7 @@ export const state = {
                     intervalFunction();
                 }
             }
+            
         },
         finish(){   // finish session
             saveSession();
@@ -195,7 +198,7 @@ const eventListeners = [
         target: "#addNewSub",
         event: "click",
         handle: () => {
-            if(subArrObj.subArray.every(sub => sub.name !== inputCollector.subName())){
+            if(subArrObj.subArray.every(sub => sub.name !== inputCollector.subName()) && inputCollector.subName()){
                 if(new Date(inputCollector.subDate()) > new Date(Date.now())){
                     let newSub = new StudySubject(inputCollector.subName(), inputCollector.subDate(), inputCollector.subConfidence());
                     localStorage.setItem("subArray",JSON.stringify(subArrObj.subArray))
@@ -207,6 +210,22 @@ const eventListeners = [
             } else {
                 customError('newSubName');
             }
+        }
+    }
+    ,{
+        target: "#subListExpandBtn",
+        event: "click",
+        handle: () => {
+            state.state = 'subList';
+            console.log('navigate to expanded sublist');
+        }
+    }
+    ,{
+        target: "#subListCollapseBtn",
+        event: "click",
+        handle: () => {
+            state.state = 'home';
+            console.log('navigate to expanded sublist');
         }
     }
     /*

@@ -18,6 +18,7 @@ class StudySubject {
         this.practicedAmount = 1;
         this.urgency = 0;
         this.tasks = [];
+        this.openTaskInput = false;
 
         calcDaysLeft(this);
         calcUrgency(this);
@@ -48,6 +49,7 @@ class Task {
         this.description = "";
 
         subject.tasks.push(this);
+        console.log(subject);
     }
     set Priority(priority) {
         this.priority = priority;
@@ -74,10 +76,12 @@ function addTask(name, sub){
     new Task(name, sub);
 }
 
-function sortTasks(criteria){
-    this.tasks.sort((a,b)=>{
-        return a.criteria - b.criteria;
-    });
+function sortTasks(sub,criteria){
+    if (criteria === 'done'){
+        sub.tasks.sort((a,b)=>{
+            return a.criteria - b.criteria;
+        });
+    }
 }
 
 function calcDaysLeft(sub){

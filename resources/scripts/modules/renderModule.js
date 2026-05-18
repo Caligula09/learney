@@ -1,4 +1,5 @@
 import { subArrObj, removeSub } from "./classModule.js";
+import { Task, StudySubject, sortTasks, sortSubs } from "./classModule.js";
 // DOM elements
 //div & container & element selectors
 const div1 = document.getElementById('div1'); //progress bar and timer div in session page
@@ -16,20 +17,23 @@ const sessionDivs = [div1, div2, div7, div8];
 const alertDiv = document.getElementById('alertDiv');
 
 let subUl = document.getElementById('subUl');//add children to this ul for new subjects (let bc must be accessible/updatable in addSubject function)
+let subUlDivExtended = document.getElementById('subUlDivExtended');
 const subTaskList = document.getElementById('subTaskList');
 const timerMins = document.getElementById('timerMins');
 const timerSecs = document.getElementById('timerSecs');
 const alertH2 = document.getElementById('alertH2');
 
+const currentTask = document.getElementById('currentTask');
+
 //button & input selectors
-const expandSubList = document.getElementById('expandSubList');//expand button in sublist
-const collapseSubList = document.getElementById('collapseSubList');//collapse button in extended sublist
 const addNewSubBtn = document.getElementById('addNewSub');
 const startSessionBtn = document.getElementById('startSession');
 const endSessionBtn = document.getElementById('endSession');
 const nextSessionBtn = document.getElementById('nextSession');
 const skipSessionBtn = document.getElementById('skipSession');
 const alertOkBtn = document.getElementById('alertOkButton');
+const leftSessionBtn = document.getElementById('leftSessionBtn');
+const rightSessionBtn = document.getElementById('rightSessionBtn');
 
 const totalHoursInput = document.getElementById('sessionHourInput');
 const totalMinsInput = document.getElementById('sessionMinInput');
@@ -66,6 +70,7 @@ export const subGenFunction = (subArr, container, bool) => {
         subArrObj.subArray = subArrObj.subArray.filter(subA => subA.name !== sub.name);
         localStorage.setItem('subArray', JSON.stringify(subArrObj.subArray));
         console.log(subArrObj.subArray);
+
     });
     subHeadDiv.appendChild(deleteSubBtn);
     //if tasks need to be generated
@@ -81,7 +86,11 @@ export const taskGenFunction = (container, sub) => {
     addTaskBtn.classList.add('addBtn');
     addTaskBtn.insertAdjacentHTML('beforeend', '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M450-450H200v-60h250v-250h60v250h250v60H510v250h-60v-250Z"/></svg>');
     addTaskBtn.addEventListener('click', () => {
-        addTaskEventFunction(ul, sub);
+        if(sub.openTaskInput === false){
+            addTaskEventFunction(ul, sub);
+        } else {
+            customError('openTaskInput');
+        }
     });
     container.appendChild(addTaskBtn);
     //ul container
@@ -91,16 +100,34 @@ export const taskGenFunction = (container, sub) => {
     //ul
     const ul = document.createElement('ul');
     ul.classList.add('tgContainerDivUl');
-    divContainer.appendChild('ul');
+    divContainer.appendChild(ul);
     //gen tasks in ul
     sub.tasks.forEach(task => generateTaskLi(ul, task, sub));
 }
 
 const addTaskEventFunction = (container, sub) => {
-
+    sub.openTaskInput = true;
+    const taskInput = document.createElement('input');
+    taskInput.type = 'text';
+    container.appendChild(taskInput);
+    taskInput.focus();
+    taskInput.addEventListener('keydown',(event)=>{
+        if(event.key === 'Enter'){
+            if(taskInput.value.trim().length >= 3){
+                const newTask = new Task(taskInput.value.toLowerCase().trim(), sub);
+                taskInput.remove();
+                sub.openTaskInput = false;
+                localStorage.setItem('subArray', JSON.stringify(subArrObj.subArray));
+                generateTaskLi(container, newTask, sub);
+            } else {
+                customError('taskMinLength')
+            }
+        }
+    });
 }
 
 const editTaskEventFunction = (task) => {
+    //edit features
 
 }
 
@@ -112,6 +139,9 @@ export const generateTaskLi = (ul, task, sub) => {
     //checkbox
     const input = document.createElement('input');
     input.type = 'checkbox';
+    if(task.done === true){
+        input.checked = true;
+    }
     li.appendChild(input);
     //p
     const p = document.createElement('p');
@@ -120,6 +150,7 @@ export const generateTaskLi = (ul, task, sub) => {
         li.remove();
         //remove from task array
         sub.tasks = sub.tasks.filter(task => task.name !== p.textContent.toLowerCase().trim());
+        localStorage.setItem('subArray', JSON.stringify(subArrObj.subArray));
         console.log(sub.tasks);
     });
     li.appendChild(p);
@@ -134,7 +165,8 @@ export const generateTaskLi = (ul, task, sub) => {
             console.log(task);
             p.style.textDecoration = 'none';
         }
-        sortTasks(sub);
+        sortTasks(sub, 'done');
+        localStorage.setItem('subArray', JSON.stringify(subArrObj.subArray));
     });
     //edit btn
     const editBtn = document.createElement('button');
@@ -156,23 +188,64 @@ const renderObject = {
             //only show state's div(s)
             divs.forEach(div=>div.classList.add('hidden'));
             homeDivs.forEach(div=>div.classList.remove('hidden'));
-
+            subUl.innerHTML = '';
+            subGenFunction(subArrObj.subArray, subUl, false);
         } else if (state === 'session'){
             console.log('session');
             //only show state's div(s)
             divs.forEach(div=>div.classList.add('hidden'));
             sessionDivs.forEach(div=>div.classList.remove('hidden'));
-
+            currentTask.textContent = subArrObj.subArray[0].name.toUpperCase();
+            subTaskList.innerHTML = '';
+            taskGenFunction(subTaskList, subArrObj.subArray[0]);
         } else if (state === 'subList'){
             console.log('subList');
             //only show state's div(s)
             divs.forEach(div=>div.classList.add('hidden'));
             div6extended.classList.remove('hidden');
             //generate subs with tasks
-            subArrObj.subArray.forEach(sub=>subGenFunction(sub,document.getElementById('subUlDivExtended'), true));
+            subUlDivExtended.innerHTML = '';
+            subGenFunction(subArrObj.subArray, subUlDivExtended, true);
         }
     },
+    renderClock(){
+        const dateH1 = document.getElementById('dateH1');
+        const timeH1 = document.getElementById('timeH1');
 
+        const now = new Date();
+        let time = now.toLocaleTimeString();
+        if(time[1] === ':'){
+            time = '0' + time;
+        }
+        if(time.length > 8){
+            time = time.slice(0, 5) + time.slice(8, 11);
+        } else{
+            time = time.slice(0, 5);
+        }
+        const date = now.toLocaleDateString();
+        dateH1.textContent = date;
+        timeH1.textContent = time;
+    },
+    renderSessionSubject(){
+        currentTask.textContent = subArrObj.subArray[0].name.toUpperCase();
+        subUlDivExtended.innerHTML = '';
+        subGenFunction(subArrObj.subArray, subUlDivExtended, true);
+    },
+    sessionNavButtons(sessionObj){
+        if(sessionObj.interval._intervalState === 0){
+            leftSessionBtn.textContent = translations[lang]['exit_session'];
+            rightSessionBtn.textContent = translations[lang]['start_session'];
+        } else if(sessionObj.interval.pauseInterval === true){
+            leftSessionBtn.textContent = translations[lang]['exit_session'];
+            rightSessionBtn.textContent = translations[lang]['resume_session'];
+        } else if (sessionObj.interval.pauseInterval === false && sessionObj.interval._intervalState !== 0){
+            leftSessionBtn.textContent = translations[lang]['end_session'];
+            rightSessionBtn.textContent = translations[lang]['pause_session'];
+        }
+    },
+    sessionInterval(){
+
+    }
 }
 
 export const inputCollector = {
@@ -211,7 +284,18 @@ export const customError = (error) => {
         console.log('eN');
     }else if(error === 'newSubDate'){
         console.log('eD');
+    } else if (error === 'openTaskInput'){
+        console.log('eOTI');
+    } else if (error === 'taskMinLength'){
+        console.log('eTML');
     }
+    /*
+    else if (error === ''){
+        console.log('e');
+    }
+    */
+    
+    
 }
 
 export default renderObject; // export to stateObjectModule.js
