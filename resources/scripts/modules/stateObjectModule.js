@@ -1,8 +1,6 @@
+import { StudySubject, subArrObj, sessionArray } from './classModule.js';
 import renderObject from './renderModule.js';
-import { inputCollector } from './renderModule.js';
-
-let subArray = [];
-let sessionArray = [];
+import { inputCollector, subGenFunction, taskGenFunction, customError } from './renderModule.js';
 
 const intervalFunction = () => {
     this.interval.active = true;
@@ -42,15 +40,15 @@ export const state = {
         renderObject.renderStates(this._state);
     },
     session: {
-        _subject: subArray[0],
-        _breaks: true,
+        _subject: subArrObj.subArray[0],
+        _breaks: null,
         _timeSpent: 0,
-        _sessionAmount: 3,
+        _sessionAmount: 0,
         _sessionsDone: 0,
         _breaksDone: 0,
         _breakLength: 5*60,     //break length in secs
-        _sessionLength: 25*60,  //session length in secs
-        _totalLength: 90*60,     //total length in secs
+        _sessionLength: 0,  //session length in secs
+        _totalLength: 0,     //total length in secs
         interval: {
             sessionInterval: null,  // key for interval
             _intervalState: null,    //countdown key
@@ -67,7 +65,7 @@ export const state = {
         subjectsStudied: [],
 
         setSubject(){
-            this._subject = subArray[0];
+            this._subject = subArrObj.subArray[0];
         },
         set breaks(bool){
             if(bool === true || bool === false){
@@ -77,11 +75,7 @@ export const state = {
             }
         },
         calcSessionAmount(){
-            if(this._breaks){
-                this._sessionAmount = Math.floor(this._totalLength / (this._sessionLength + this._breakLength));
-            } else {
-                this._sessionAmount = Math.floor(this._totalLength / this._sessionLength);
-            }
+            this._sessionAmount = Math.floor(this._totalLength / this._sessionLength);
         },
         set breakLength(num){
             if(num > 60){
@@ -98,7 +92,7 @@ export const state = {
             }
         },
         set totalLength(num){
-            if(this._totalLength >= 15*60){
+            if(num >= 900){
                 this._totalLength = num;
             } else {
                 console.warn('totalLength must be a number greater than 900 (seconds)')
@@ -143,7 +137,7 @@ export const state = {
                     if(this._breaks){ //breaks - check if session or break
                         if(this._sessionsDone === this._breaksDone){//when coming out of a session
                             this.incSessionsDone();
-                            subArray[0].practicedAmount ++;
+                            subArrObj.subArray[0].practicedAmount ++;
                             this.subjectsStudied.push(this._subject);
                             sortSubs();
                             this.setSubject();
@@ -156,7 +150,7 @@ export const state = {
                         }
                     }else{ //no breaks - instant continue
                         this.incSessionsDone();
-                        subArray[0].practicedAmount ++;
+                        subArrObj.subArray[0].practicedAmount ++;
                         sortSubs();
                         this.subject();
                         this.interval.setIntervalState(this._sessionLength);
@@ -183,8 +177,10 @@ const eventListeners = [
             state.session.breaks = inputCollector.breakInput();
             state.session.sessionLength = inputCollector.sessionLength();
             state.session.totalLength = inputCollector.totalLength();
+            state.session.calcSessionAmount();
             state.state = 'session';
             console.log('navigate to session');
+            console.log(state.session);
         }
     },
     {
@@ -193,6 +189,24 @@ const eventListeners = [
         handle: () => {
             state.state = 'home';
             console.log('navigate to home');
+        }
+    }
+    ,{
+        target: "#addNewSub",
+        event: "click",
+        handle: () => {
+            if(subArrObj.subArray.every(sub => sub.name !== inputCollector.subName())){
+                if(new Date(inputCollector.subDate()) > new Date(Date.now())){
+                    let newSub = new StudySubject(inputCollector.subName(), inputCollector.subDate(), inputCollector.subConfidence());
+                    localStorage.setItem("subArray",JSON.stringify(subArrObj.subArray))
+                    subGenFunction([newSub], document.getElementById('subUl'), false);
+                    inputCollector.clearSubInputs();
+                } else{
+                    customError('newSubDate');
+                }
+            } else {
+                customError('newSubName');
+            }
         }
     }
     /*
@@ -204,4 +218,4 @@ const eventListeners = [
     */
 ];
 
-export {subArray, sessionArray, renderObject, eventListeners };
+export { renderObject, eventListeners };

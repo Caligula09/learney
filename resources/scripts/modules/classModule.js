@@ -1,3 +1,12 @@
+export const subArrObj = { subArray: [] };
+export let sessionArray = [];
+//sub array
+export function removeSub(sub){
+    subArrObj.subArray = subArrObj.subArray.filter(subA => subA.name !== sub.name);
+    console.log(subArrObj.subArray);
+}
+
+//classes
 class StudySubject {
     constructor(name, dueDate, confidenceLevel) {
         this.name = name;
@@ -10,11 +19,11 @@ class StudySubject {
         this.urgency = 0;
         this.tasks = [];
 
-        calculateDaysLeft(this);
-        calculateUrgency(this);
+        calcDaysLeft(this);
+        calcUrgency(this);
 
-        subArray.push(this);
-        console.log(this);
+        subArrObj.subArray.push(this);
+        console.log(subArrObj.subArray);
     }
 /*
     addSession(timeSpent) {
@@ -71,7 +80,7 @@ function sortTasks(criteria){
     });
 }
 
-function calculateDaysLeft(sub){
+function calcDaysLeft(sub){
     const today = new Date();
     const timeDiff = new Date(sub.dueDate) - today;
     sub.daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
@@ -87,8 +96,8 @@ const sortSubs = () => {
         return a.urgency - b.urgency ;
     }
     subArray.sort(compareUrgency);
-    console.log("New Sorted SubArray: " + subArray);
+    console.log("New Sorted SubArray: " + subArrObj.subArray);
 }
 
 export { StudySubject, Task };
-export { calcUrgency, addTask, sortTasks, calculateDaysLeft, sortSubs };
+export { calcUrgency, addTask, sortTasks, calcDaysLeft, sortSubs };

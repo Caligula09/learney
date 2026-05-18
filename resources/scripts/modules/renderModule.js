@@ -1,3 +1,4 @@
+import { subArrObj, removeSub } from "./classModule.js";
 // DOM elements
 //div & container & element selectors
 const div1 = document.getElementById('div1'); //progress bar and timer div in session page
@@ -34,11 +35,16 @@ const totalHoursInput = document.getElementById('sessionHourInput');
 const totalMinsInput = document.getElementById('sessionMinInput');
 const sessionMinsInput = document.getElementById('sessionLengthInput');
 
+const subNameInput = document.getElementById('subjectInput');
+const subDateInput = document.getElementById('dateInput');
+const subConfidenceInput = document.getElementById('confidenceInput');
+
 const breaksYes = document.getElementById('breaksYes');
 const inSessionTaskAdder = document.getElementById('inSessionTaskAdder'); //  ?
 
-const subGenFunction = (sub, container, bool) => {
+export const subGenFunction = (subArr, container, bool) => {
     container.innerHTML = "";
+    for(let sub of subArr){
     //sub container
     const subDiv = document.createElement('div');
     subDiv.classList.add('subDiv');
@@ -57,18 +63,19 @@ const subGenFunction = (sub, container, bool) => {
     deleteSubBtn.insertAdjacentHTML('beforeend', '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M261-120q-24.75 0-42.37-17.63Q201-155.25 201-180v-570h-11q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h158q0-13 8.63-21.5 8.62-8.5 21.37-8.5h204q12.75 0 21.38 8.62Q612-822.75 612-810h158q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5h-11v570q0 24.75-17.62 42.37Q723.75-120 699-120H261Zm438-630H261v570h438v-570ZM418.5-274.63q8.5-8.62 8.5-21.37v-339q0-12.75-8.68-21.38-8.67-8.62-21.5-8.62-12.82 0-21.32 8.62-8.5 8.63-8.5 21.38v339q0 12.75 8.68 21.37 8.67 8.63 21.5 8.63 12.82 0 21.32-8.63Zm166 0q8.5-8.62 8.5-21.37v-339q0-12.75-8.68-21.38-8.67-8.62-21.5-8.62-12.82 0-21.32 8.62-8.5 8.63-8.5 21.38v339q0 12.75 8.68 21.37 8.67 8.63 21.5 8.63 12.82 0 21.32-8.63ZM261-750v570-570Z"/></svg>');
     deleteSubBtn.addEventListener('click', () => {
         subDiv.remove();
-        subArray = subArray.filter(subA => subA.name !== sub.name);
+        subArrObj.subArray = subArrObj.subArray.filter(subA => subA.name !== sub.name);
+        localStorage.setItem('subArray', JSON.stringify(subArrObj.subArray));
+        console.log(subArrObj.subArray);
     });
     subHeadDiv.appendChild(deleteSubBtn);
     //if tasks need to be generated
     if(bool === true){
         taskGenFunction(subDiv, sub);
     }
+    }
 }
 
-const taskGenFunction = (container, sub) => {
-    //delete content
-    container.innerHTML = "";
+export const taskGenFunction = (container, sub) => {
     //add button
     const addTaskBtn = document.createElement('button');
     addTaskBtn.classList.add('addBtn');
@@ -97,7 +104,7 @@ const editTaskEventFunction = (task) => {
 
 }
 
-const generateTaskLi = (ul, task, sub) => {
+export const generateTaskLi = (ul, task, sub) => {
     //li
     const li = document.createElement('li');
     li.classList.add('taskLi');
@@ -162,7 +169,7 @@ const renderObject = {
             divs.forEach(div=>div.classList.add('hidden'));
             div6extended.classList.remove('hidden');
             //generate subs with tasks
-            subArray.forEach(sub=>subGenFunction(sub,document.getElementById('subUlDivExtended'), true));
+            subArrObj.subArray.forEach(sub=>subGenFunction(sub,document.getElementById('subUlDivExtended'), true));
         }
     },
 
@@ -180,7 +187,30 @@ export const inputCollector = {
         return sessionMinsInput.value * 60;
     },
     totalLength(){
-        return totalHoursInput * 3600 + totalMinsInput * 60;
+        return (totalHoursInput.value * 3600 + totalMinsInput.value * 60);
+    },
+    subName(){
+        return subNameInput.value.toLowerCase().trim();
+    },
+    subDate(){
+        return subDateInput.value;
+    },
+    subConfidence(){
+        return subConfidenceInput.value;
+    },
+    clearSubInputs(){
+        subNameInput.value = "";
+        const inSevenDays = new Date(Date.now() + 7 * 24 * 3600 * 1000);
+        subDateInput.value = inSevenDays.toISOString().split('T')[0];
+        subConfidenceInput.value = 3;
+    }
+}
+
+export const customError = (error) => {
+    if(error === 'newSubName'){
+        console.log('eN');
+    }else if(error === 'newSubDate'){
+        console.log('eD');
     }
 }
 
