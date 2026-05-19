@@ -24,4 +24,4 @@ eventListeners.forEach(({ target, event, handle}) => {
 });
 
 
-renderObject.renderStates('home');
+renderObject.renderStates(state);

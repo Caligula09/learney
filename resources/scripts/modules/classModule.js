@@ -78,9 +78,9 @@ function addTask(name, sub){
 
 function sortTasks(sub,criteria){
     if (criteria === 'done'){
-        sub.tasks.sort((a,b)=>{
-            return a.criteria - b.criteria;
-        });
+    sub.tasks.sort((a,b)=>{
+        return a.criteria - b.criteria;
+    });
     }
 }
 
@@ -93,13 +93,13 @@ function calcDaysLeft(sub){
 //
 
 const sortSubs = () => {
-    subArray.forEach(sub => {
+    subArrObj.subArray.forEach(sub => {
         calcUrgency(sub);
     });
     const compareUrgency = (a,b) => {
         return a.urgency - b.urgency ;
     }
-    subArray.sort(compareUrgency);
+    subArrObj.subArray.sort(compareUrgency);
     console.log("New Sorted SubArray: " + subArrObj.subArray);
 }
 

@@ -24,7 +24,7 @@ const timerSecs = document.getElementById('timerSecs');
 const alertH2 = document.getElementById('alertH2');
 
 const currentTask = document.getElementById('currentTask');
-
+const stateH1 = document.getElementById('stateH1');
 //button & input selectors
 const addNewSubBtn = document.getElementById('addNewSub');
 const startSessionBtn = document.getElementById('startSession');
@@ -182,23 +182,22 @@ export const generateTaskLi = (ul, task, sub) => {
 //function
 const renderObject = {
 
-    renderStates(state){
-        if (state === 'home'){
+    renderStates(stateObj){
+        if (stateObj._state === 'home'){
             console.log('home');
             //only show state's div(s)
             divs.forEach(div=>div.classList.add('hidden'));
             homeDivs.forEach(div=>div.classList.remove('hidden'));
             subUl.innerHTML = '';
             subGenFunction(subArrObj.subArray, subUl, false);
-        } else if (state === 'session'){
+        } else if (stateObj._state === 'session'){
             console.log('session');
             //only show state's div(s)
             divs.forEach(div=>div.classList.add('hidden'));
             sessionDivs.forEach(div=>div.classList.remove('hidden'));
-            currentTask.textContent = subArrObj.subArray[0].name.toUpperCase();
-            subTaskList.innerHTML = '';
-            taskGenFunction(subTaskList, subArrObj.subArray[0]);
-        } else if (state === 'subList'){
+            this.renderSessionSubject(stateObj);
+            this.sessionNavButtons(stateObj);
+        } else if (stateObj._state === 'subList'){
             console.log('subList');
             //only show state's div(s)
             divs.forEach(div=>div.classList.add('hidden'));
@@ -226,23 +225,53 @@ const renderObject = {
         dateH1.textContent = date;
         timeH1.textContent = time;
     },
-    renderSessionSubject(){
+    renderSessionSubject(stateObj){
         currentTask.textContent = subArrObj.subArray[0].name.toUpperCase();
-        subUlDivExtended.innerHTML = '';
-        subGenFunction(subArrObj.subArray, subUlDivExtended, true);
+        subTaskList.innerHTML = '';
+        taskGenFunction(subTaskList, subArrObj.subArray[0]);
+        stateH1.textContent = stateObj.session.nextObjective.toUpperCase();
     },
-    sessionNavButtons(sessionObj){
-        if(sessionObj.interval._intervalState === 0){
+    _navController: null,
+    sessionNavButtons(stateObj){
+        if(this._navController){
+            this._navController.abort();
+        }
+        this._navController = new AbortController();
+        const { signal } = this._navController;
+        const lang = localStorage.getItem('lang') || 'de';
+
+        if(stateObj.session.interval._intervalState === 0){
             leftSessionBtn.textContent = translations[lang]['exit_session'];
+            leftSessionBtn.addEventListener('click',()=>{
+                stateObj.state = 'home';
+            }, { signal });
             rightSessionBtn.textContent = translations[lang]['start_session'];
-        } else if(sessionObj.interval.pauseInterval === true){
+            rightSessionBtn.addEventListener('click',()=>{
+                stateObj.session.interval.skipInterval = false;
+                stateObj.session.step();
+            }, { signal });
+        } else if(stateObj.session.interval.pauseInterval === true){
             leftSessionBtn.textContent = translations[lang]['exit_session'];
+            leftSessionBtn.addEventListener('click',()=>{
+                stateObj.state = 'home';
+            }, { signal });
             rightSessionBtn.textContent = translations[lang]['resume_session'];
-        } else if (sessionObj.interval.pauseInterval === false && sessionObj.interval._intervalState !== 0){
+            rightSessionBtn.addEventListener('click',()=>{
+                stateObj.session.interval.pauseInterval = false;
+                stateObj.session.step();
+            }, { signal });
+        } else if (stateObj.session.interval.active === true){
             leftSessionBtn.textContent = translations[lang]['end_session'];
+            leftSessionBtn.addEventListener('click',()=>{
+                stateObj.session.interval.skipInterval = true;
+            }, { signal });
             rightSessionBtn.textContent = translations[lang]['pause_session'];
+            rightSessionBtn.addEventListener('click',()=>{
+                stateObj.session.interval.pauseInterval = true;
+            }, { signal });
         }
     },
+
     sessionInterval(){
 
     }

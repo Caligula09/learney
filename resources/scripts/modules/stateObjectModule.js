@@ -1,17 +1,21 @@
-import { StudySubject, subArrObj, sessionArray } from './classModule.js';
+import { StudySubject, subArrObj, sessionArray, sortSubs, sortTasks } from './classModule.js';
 import renderObject from './renderModule.js';
 import { inputCollector, subGenFunction, taskGenFunction, customError } from './renderModule.js';
 
-const intervalFunction = () => {
-    this.interval.active = true;
-    this.interval.sessionInterval = setInterval(()=>{
-        this.interval._intervalState--; // count
-        console.log(this.interval._intervalState);    //log timer to console for test purposes
-        if(this.interval._intervalState === 0 || this.interval.pauseInterval === true || this.interval.skipInterval === true){ //check for condition to finish
-            clearInterval(this.interval.sessionInterval);
-            this.interval.active = false;
-            renderObject.sessionInterval();
+const intervalFunction = (stateObj) => {
+    stateObj.session.interval.active = true;
+    stateObj.session.interval.sessionInterval = setInterval(()=>{
+        stateObj.session.interval._intervalState--; // count
+        stateObj.session.incTimeSpent();
+        console.log(stateObj.session.interval._intervalState);    //log timer to console for test purposes
+        if(stateObj.session.interval._intervalState === 0 || stateObj.session.interval.pauseInterval === true || stateObj.session.interval.skipInterval === true){ //check for condition to finish
+            clearInterval(stateObj.session.interval.sessionInterval);
+            stateObj.session.interval.active = false;
+            stateObj.session.interval.skipInterval = false;
+            renderObject.sessionNavButtons(stateObj);
+            console.log('stopped at: ' + stateObj.session.interval._intervalState )
         }
+        renderObject.sessionInterval();
     }, 1000);
 }
 
@@ -38,7 +42,7 @@ export const state = {
                 throw Error('must enter valid state from state list to set state');
             }
         }
-        renderObject.renderStates(this._state);
+        renderObject.renderStates(this);
     },
     session: {
         _subject: subArrObj.subArray[0],
@@ -50,21 +54,41 @@ export const state = {
         _breakLength: 5*60,     //break length in secs
         _sessionLength: 0,  //session length in secs
         _totalLength: 0,     //total length in secs
+        nextObjective: 'study',
         interval: {
             sessionInterval: null,  // key for interval
             _intervalState: 0,    //countdown key
             pauseInterval: false,   //pause
             skipInterval: false,     //skip
             active: false,
-            setIntervalState(){
-                this.intervalState = state.session._sessionLength;
+            setIntervalState(num){
+                this._intervalState = num;
             },
-
-
+            resetInt(){
+                this.sessionInterval = null;
+                this._intervalState = 0;
+                this.pauseInterval = false;
+                this.skipInterval = false;
+                this.active = false;
+            }
         },
         finished: false,
         subjectsStudied: [],
-
+        reset(){
+            this._subject= subArrObj.subArray[0];
+            this._breaks= null;
+            this._timeSpent= 0;
+            this._sessionAmount= 0;
+            this._sessionsDone= 0;
+            this._breaksDone= 0;
+            this._breakLength= 5*60;    //break length in secs
+            this._sessionLength= 0;  //session length in secs
+            this._totalLength= 0;    //total length in secs
+            this.nextObjective= 'study';
+            this.interval.resetInt();
+            this.finished=false;
+            this.subjectsStudied = [];
+        },
         setSubject(){
             this._subject = subArrObj.subArray[0];
         },
@@ -77,6 +101,7 @@ export const state = {
         },
         calcSessionAmount(){
             this._sessionAmount = Math.floor(this._totalLength / this._sessionLength);
+            console.log('sessionAmount: ' + this._sessionAmount);
         },
         set breakLength(num){
             if(num > 60){
@@ -117,25 +142,29 @@ export const state = {
         },
 
         step(){
-            if (this.sessionsDone === 0){
+            if (this._timeSpent === 0){
                 this.start();
-            } else if (this.sessionsDone < this.sessionAmount) {
+            }else if (this._sessionsDone < this._sessionAmount) {
                 this.next();
-            } else if (this.sessionsDone === this.sessionAmount){
+            }else if (this._sessionsDone === this._sessionAmount){
                 this.finish();
             }
             localStorage.setItem("subArray",JSON.stringify(subArrObj.subArray));
+            renderObject.sessionNavButtons(state);
         },
 
         // only call step function  
 
         start(){ //start session 
-            this.interval.setIntervalState(); //assign countdown
-            intervalFunction();
+            this.interval.setIntervalState(this._sessionLength); //assign countdown
+            intervalFunction(state);
         },
         next(){
+            console.log('next');
             if(this.interval.active === false){ //check that interval is not currently running
+                console.log('active: false');
                 if(this.interval._intervalState === 0){//go to next 
+                    console.log('_intervalState === 0');
                     if(this._breaks){ //breaks - check if session or break
                         if(this._sessionsDone === this._breaksDone){//when coming out of a session
                             this.incSessionsDone();
@@ -144,11 +173,13 @@ export const state = {
                             sortSubs();
                             this.setSubject();
                             this.interval.setIntervalState(this._breakLength);
-                            intervalFunction();
+                            this.nextObjective = 'break';
+                            intervalFunction(state);
                         } else{ // when coming out of a break
                             this.incBreaksDone();
                             this.interval.setIntervalState(this._sessionLength);
-                            intervalFunction();
+                            this.nextObjective = 'study';
+                            intervalFunction(state);
                         }
                     }else{ //no breaks - instant continue
                         this.incSessionsDone();
@@ -156,18 +187,18 @@ export const state = {
                         sortSubs();
                         this.subject();
                         this.interval.setIntervalState(this._sessionLength);
-                        intervalFunction();
+                        intervalFunction(state);
                     }
                 } else{ //continue countdown
-                    this.interval.setIntervalState(this.sessionLength);
-                    intervalFunction();
+                    console.log('continue')
+                    intervalFunction(state);
                 }
             }
-            
+            renderObject.renderSessionSubject(state);
         },
         finish(){   // finish session
             saveSession();
-            state.state('home');
+            state.state = 'home';
         }
     }
 }
@@ -177,6 +208,7 @@ const eventListeners = [
         target: "#startSession",
         event: "click",
         handle: () => {
+            state.session.reset();
             state.session.breaks = inputCollector.breakInput();
             state.session.sessionLength = inputCollector.sessionLength();
             state.session.totalLength = inputCollector.totalLength();
@@ -184,14 +216,6 @@ const eventListeners = [
             state.state = 'session';
             console.log('navigate to session');
             console.log(state.session);
-        }
-    },
-    {
-        target: "#endSession",
-        event: "click",
-        handle: () => {
-            state.state = 'home';
-            console.log('navigate to home');
         }
     }
     ,{
