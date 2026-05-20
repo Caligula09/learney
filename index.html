@@ -41,11 +41,11 @@
                 -->
                 <h2 id="stateH1"></h2>
             </div>
-            <div id="div3">
+            <div id="div3" class="hidden">
                 <h2 id="dateH1"></h2>
                 <h2 id="timeH1"></h2>
             </div>
-            <div id="div4"><!--
+            <div id="div4" class="hidden"><!--
                 <h2 data-i18n="new_session"></h2>
                 <div id="newEnergy">
                     <h2 data-i18n="energy_h2"></h2>
@@ -79,7 +79,7 @@
                 </div>
                 <button id="startSession" data-i18n="start_session"></button>
             </div>
-            <div id="div5">
+            <div id="div5" class="hidden">
                 <h2 id="addSub" data-i18n="new_add_sub"></h2>
                 <input type="text" id="subjectInput" data-i18n-placeholder="enter_sub" list="subjectOptions">
                 <datalist id="subjectOptions">
@@ -101,9 +101,11 @@
                 <input type="range" id="confidenceInput" min="1" max="5" value="3">
                 <button id="addNewSub" data-i18n="new_add"></button>
             </div>
-            <div id="div6">
-                <svg xmlns="http://www.w3.org/2000/svg" id="expandSubList" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M260-260h150q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H230q-12.75 0-21.37-8.63Q200-217.25 200-230v-180q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v150Zm440-440H550q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h180q12.75 0 21.38 8.62Q760-742.75 760-730v180q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-150Z"/></svg>
+            <div id="div6" class="hidden">
                 <h2 data-i18n="your_subs"></h2>
+                <button id="subListExpandBtn" class="sizeBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" id="expandSubList" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M260-260h150q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H230q-12.75 0-21.37-8.63Q200-217.25 200-230v-180q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v150Zm440-440H550q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h180q12.75 0 21.38 8.62Q760-742.75 760-730v180q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-150Z"/></svg>
+                </button>
                 <div id="subUlDiv">
                     <ul id="subUl">
 
@@ -111,7 +113,9 @@
                 </div>
             </div>
             <div id="div6extended" class="hidden">
-                <svg xmlns="http://www.w3.org/2000/svg" id="collapseSubList" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M380-380H230q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h180q12.75 0 21.38 8.62Q440-422.75 440-410v180q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-150Zm200-200h150q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H550q-12.75 0-21.37-8.63Q520-537.25 520-550v-180q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v150Z"/></svg>
+                <button id="subListCollapseBtn" class="sizeBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" id="collapseSubList" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M380-380H230q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h180q12.75 0 21.38 8.62Q440-422.75 440-410v180q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-150Zm200-200h150q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H550q-12.75 0-21.37-8.63Q520-537.25 520-550v-180q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v150Z"/></svg>
+                </button>
                 <h2 data-i18n="your_subs" id="extendedSubsH2"></h2>
                 <div id="subUlDivExtended"  class="tgContainer">
 
@@ -120,35 +124,39 @@
             <div id="div7" class="hidden">
                 <h3 data-i18n="current_task"></h3>
                 <h2 id="currentTask"><h2>
-                <button id="nextSession" data-i18n="next_session"></button>
-                <button id="endSession" data-i18n="end_session"></button>
-                <button id="skipSession" data-i18n="skip_session" class="hidden"></button>
+                <button id="leftSessionBtn"></button>
+                <button id="rightSessionBtn"></button>
+                <!--<button id="skipSession" data-i18n="skip_session" class="hidden"></button>-->
             </div>
             <div id="div8" class="hidden">
                 <h2 data-i18n="session_sub_tasks"></h2>
-                <div id="subTaskList"  class="tgContainer">
+                <ul id="subTaskList"  class="tgContainer">
 
-                </div>
+                </ul>
                 <!--<div id="inSessionTaskAdder">
                     <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="current color"><path d="M450-450H200v-60h250v-250h60v250h250v60H510v250h-60v-250Z"/></svg>
                 </div>-->
             </div>
             
         </main>
-        <div id="alertDiv" class="hidden">
-            <div id="innerAlertDiv">
+        <div class="divBg hidden" id="outerAlert">
+            <div id="alertDiv">
                 <h2 id="alertH2"></h2>
                 <button id="alertOkButton">OK</button>
             </div>
         </div>
+        <div class="divBg hidden" id="outerEdit">
+            <div id="editDiv">
+                <div id="editInputs">
 
-        <div id="temporaryDivContainer">
-
+                </div>
+                <button id="editApplyBtn" data-i18n="save"></button>
+            </div>
         </div>
         
         <script src="./resources/scripts/translationScript.js"></script>
         <script src="./resources/scripts/colorScript.js"></script>
         <script src="./resources/scripts/menuScript.js"></script>
-        <script type="module" src="./resources/scripts/newScript.js"></script>
+        <script type="module" src="./resources/scripts/combinedScript.js"></script>
     </body>
 </html>

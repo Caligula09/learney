@@ -1,7 +1,7 @@
 console.log('newScript.js is running');
 console.log('newScript.js is loading modules');
 
-import { StudySubject, Task } from './classModule.js';
+import { StudySubject, Task } from './modules/classModule.js';
 
 console.log('newScript.js is loading functions');
 //functions 
@@ -49,7 +49,7 @@ const addTaskEventFunction = (container, sub) => {
             const newTaskText = document.createElement('p');
             newTaskText.textContent = taskInput.value.toUpperCase();
             //add task to sub object
-            const newTaskObject = {name: newTaskText.textContent.toLowerCase().trim(), done: false};
+            const newTaskObject = new Task(taskInput.value.toLowerCase().trim(), currentSub);
             currentSub.tasks.push(newTaskObject);
             console.log(currentSub.tasks);
             const editBtn = document.createElement('button');
@@ -238,19 +238,7 @@ const addSubject = () => {
 
         if (subInput.value && dateInput.value && daysAvailable >= 0){ //check whether input is not empty and valid
 
-            const newSub = {
-                name: subInput.value.toLowerCase().trim(), 
-                dueDate: dateInput.value, 
-                confidence: Number(confInput.value),
-                daysLeft: daysAvailable,
-                practicedAmount: 1,
-                urgency: 0,
-                tasks: []
-            }
-
-            subArray.push(newSub);
-            calcUrgency(subArray.at(-1));
-            console.log(subArray.at(-1));
+            const newSub = new StudySubject(subInput.value.toLowerCase().trim(), dateInput.value, Number(confInput.value));
             //add li subject
             subBuilder(newSub);
             //clear inputs
@@ -404,13 +392,13 @@ const endSession = () => {
     sessionObject.started = false;
     saveSubArray();
 }
-
+/*
 const sortTasks = (sub) => {
     sub.tasks.sort((a,b)=>{
         return a.done - b.done;
     });
 }
-
+*/
 const sortSubs = () => {
     subArray.forEach(sub =>calcUrgency(sub));
     const compareUrgency = (a,b) => {
@@ -575,7 +563,6 @@ console.log('newScript.js is starting application logic');
 const lang = localStorage.getItem("lang") || "de"; //load language from local storage or default to german
 setInterval(updateTimeDate ,1000); //clock and date update every second
 
-let subArray = []; 
 let studyInterval;
 
 subArray = JSON.parse(localStorage.getItem('subArray'));
