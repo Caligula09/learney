@@ -73,6 +73,7 @@ const addTaskEventFunction = (container, sub) => {
                     console.log(currentSub.tasks);
                 }
                 sortTasks(sub);
+                saveSubArray();
             });
             newTask.appendChild(checkBox);
             newTask.appendChild(newTaskText);
@@ -83,6 +84,7 @@ const addTaskEventFunction = (container, sub) => {
                 //remove from task array
                 currentSub.tasks = currentSub.tasks.filter(task => task !== newTaskObject);
                 console.log(currentSub.tasks);
+                saveSubArray();
             });
             container.appendChild(newTask);
             event.target.remove();
@@ -90,9 +92,11 @@ const addTaskEventFunction = (container, sub) => {
                 container.firstElementChild.remove();
             }
         }
+        saveSubArray();
     }); 
     container.appendChild(taskInput);
     taskInput.focus();
+    saveSubArray();
 }
 
 const editTaskEventFunction = (task) => {
@@ -141,6 +145,7 @@ const taskGenFunction = (container, subIndexStart, subAmount) => {
             editBtn.insertAdjacentHTML('beforeend', '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M180-180h44l472-471-44-44-472 471v44Zm-30 60q-13 0-21.5-8.5T120-150v-73q0-12 5-23.5t13-19.5l557-556q8-8 19-12.5t23-4.5q11 0 22 4.5t20 12.5l44 44q9 9 13 20t4 22q0 11-4.5 22.5T823-694L266-138q-8 8-19.5 13t-23.5 5h-73Zm629-617-41-41 41 41Zm-105 64-22-22 44 44-22-22Z"/></svg>');
             editBtn.addEventListener('click', () => {
                 editTaskEventFunction(subArray[j].tasks[i]);
+                saveSubArray();
             });
             input.type = 'checkbox';
             const p = document.createElement('p');
@@ -159,6 +164,7 @@ const taskGenFunction = (container, subIndexStart, subAmount) => {
                     p.style.textDecoration = 'none';
                 }
                 sortTasks(subArray[j]);
+                saveSubArray();
             });
             p.textContent = subArray[j].tasks[i].name.toUpperCase();
             p.addEventListener('click', () => {
@@ -166,6 +172,7 @@ const taskGenFunction = (container, subIndexStart, subAmount) => {
                 //remove from task array
                 subArray[j].tasks = subArray[j].tasks.filter(task => task.name !== p.textContent.toLowerCase().trim());
                 console.log(subArray[j].tasks);
+                saveSubArray();
             });
 
             li.appendChild(input);
@@ -187,16 +194,40 @@ const taskGenFunction = (container, subIndexStart, subAmount) => {
     }
 }
 
+const subBuilder = (sub) => {    
+            const li = document.createElement('li');
+            li.id = sub.name;
+            const span = document.createElement('span');
+            span.textContent = "🗑️";
+            span.id = `${sub.name.toLowerCase().trim()}Remove`;
+            li.textContent = sub.name.toUpperCase() + ' ' + sub.dueDate;
+            li.appendChild(span);
+            span.addEventListener('click', (event) => {   //add remove subject function
+                for (i=0; i < subArray.length; i++){
+                    if(subArray[i].name === li.id){
+                        subArray.splice(i, 1);
+                    }
+                }
+                event.target.remove();
+                li.remove();
+                console.log(subArray);
+                saveSubArray();
+            });
+            subUl = document.getElementById('subUl');   //update subUl for new li
+            subUl.appendChild(li);
+        }
+
 const addSubject = () => {
     //get inputs
     const subInput = document.getElementById('subjectInput');
     const dateInput = document.getElementById('dateInput');
     const confInput = document.getElementById('confidenceInput');
-
     let doubles = [];     //check if subject is already in list
-    doubles = subArray.filter(sub => {
-        return sub.name === subInput.value.toLowerCase().trim();
-    });
+    if (subArray[0]){
+        doubles = subArray.filter(sub => {
+            return sub.name === subInput.value.toLowerCase().trim();
+        });
+    }
     console.log('Add subject triggered')
     if(doubles.length === 0 || subArray.length === 0){    //only add if not in list yet
         //calculate days until due date
@@ -209,25 +240,7 @@ const addSubject = () => {
 
             const newSub = new StudySubject(subInput.value.toLowerCase().trim(), dateInput.value, Number(confInput.value));
             //add li subject
-            const li = document.createElement('li');
-            li.id = subInput.value.toLowerCase().trim();
-            const span = document.createElement('span');
-            span.textContent = "🗑️";
-            span.id = `${subInput.value.toLowerCase().trim()}Remove`;
-            li.textContent = subInput.value + ' ' + dateInput.value;
-            li.appendChild(span);
-            span.addEventListener('click', (event) => {   //add remove subject function
-                for (i=0; i < subArray.length; i++){
-                    if(subArray[i].name === li.id){
-                        subArray.splice(i, 1);
-                    }
-                }
-                event.target.remove();
-                li.remove();
-                console.log(subArray);
-            });
-            subUl = document.getElementById('subUl');   //update subUl for new li
-            subUl.appendChild(li);
+            subBuilder(newSub);
             //clear inputs
             subInput.value = '';
             dateInput.value = '';
@@ -245,6 +258,15 @@ const addSubject = () => {
         triggerAlert("no_double_alert");
     }
     console.log(subArray);
+    saveSubArray();
+}
+
+function calcUrgency(sub){
+    sub.urgency = sub.daysLeft * sub.confidence * sub.practicedAmount;
+}
+
+function calcDays(sub){
+    sub.daysLeft = Math.ceil((this.dueDate - new Date())/(1000*60*60*24))
 }
 
 //collapse sub list
@@ -274,7 +296,7 @@ const subListCollapser = () => {
     subUlDiv.innerHTML = '';
     const ul = document.createElement('ul');
     ul.id = 'subUl';
-    for(sub of subArray){
+    for(let sub of subArray){
         const li = document.createElement('li');
         li.id = sub.name;
         const span = document.createElement('span');
@@ -285,6 +307,7 @@ const subListCollapser = () => {
             for (i=0; i < subArray.length; i++){
                 if(subArray[i].name === li.id){
                     subArray.splice(i, 1);
+                    saveSubArray();
                 }
             }
             event.target.remove();
@@ -347,6 +370,7 @@ const startSession = () => {
     } else {
         triggerAlert("no_empty_alert");
     }
+    saveSubArray();
 }
 
 const endSession = () => {
@@ -366,6 +390,7 @@ const endSession = () => {
     document.getElementById('stateH1').textContent = translations[lang]['study'];
     progressor.style.width = '0%';
     sessionObject.started = false;
+    saveSubArray();
 }
 /*
 const sortTasks = (sub) => {
@@ -375,10 +400,7 @@ const sortTasks = (sub) => {
 }
 */
 const sortSubs = () => {
-    subArray.forEach(sub => {
-        sub.calcUrgency();
-
-    });
+    subArray.forEach(sub =>calcUrgency(sub));
     const compareUrgency = (a,b) => {
         return a.urgency - b.urgency ;
     }
@@ -389,6 +411,7 @@ const sortSubs = () => {
     sessionObject.subject = subArray[0].name;
     //generate sub tasks
     taskGenFunction(subTaskList, 0, 1);
+    saveSubArray();
 }
 
 const nextSessionOnClick = () => {
@@ -434,6 +457,7 @@ const nextSessionOnClick = () => {
             }
         }, 1000);
     }
+    saveSubArray();
 }
 
 const skipSessionEvent = ()=>{
@@ -458,7 +482,14 @@ const skipSessionEvent = ()=>{
         document.getElementById('stateH1').textContent = translations[lang]['study'];
     }
     console.log(sessionObject);
+    saveSubArray();
 };
+
+const saveSubArray = () => {
+    localStorage.setItem('subArray', JSON.stringify(subArray));
+    console.log('Saved subArray to localStorage:');
+    console.log(subArray);
+}
 
 console.log('newScript.js: functions loaded');
 
@@ -534,6 +565,10 @@ setInterval(updateTimeDate ,1000); //clock and date update every second
 
 let studyInterval;
 
+subArray = JSON.parse(localStorage.getItem('subArray'));
+
+
+
 //div & container & element selectors
 const div1 = document.getElementById('div1'); //progress bar and timer div in session page
 const div2 = document.getElementById('div2'); //state div in session page (displays study/break)
@@ -575,5 +610,8 @@ nextSessionBtn.addEventListener('click', nextSessionOnClick);
 skipSessionBtn.addEventListener('click', skipSessionEvent);
 alertOkBtn.addEventListener('click', hideAlertDiv);
 
+if(subArray[0]){
+    subArray.forEach(sub => subBuilder(sub));
+}
 console.log('newScript.js: application logic loaded');
 console.log('newScript.js is fully loaded');
