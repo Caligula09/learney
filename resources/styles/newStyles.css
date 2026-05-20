@@ -234,6 +234,10 @@ main div{
     align-self: flex-end;
 }
 
+.subH2{
+    font-size: 1.25rem!important;
+}
+
 #div6 ul{
     overflow-y: scroll;
     height: 100%;
@@ -251,17 +255,10 @@ main div{
     text-align: center;
 }
 
-#div6 svg{
-    position: absolute;
-    top: 0.5rem;
-    right: 0;
-    width: 20%;
-    height: auto;
-    max-width: 4rem;
-    margin: 0;
-    padding: 0;
+#div6 button{
+    height: 2.5rem;
+    width: 2.5rem;
 }
-
 /*extended subTaskList page*/
 
 #div6extended{
@@ -335,17 +332,6 @@ li p{
     margin: 0;
     width: auto;
 }
-
-#collapseSubList{
-    position: absolute;
-    top: 0.5rem;
-    right: 0;
-    width: 20%;
-    height: auto;
-    max-width: 4rem;
-    margin: 0;
-    padding: 0;
-} 
 
 @media screen and (max-width: 775px) and (min-width: 651px){
     .tgContainerDivH3{
@@ -595,7 +581,7 @@ input[type="checkbox"]{
 }
 
 /*Alert Styles*/
-#alertDiv{
+.divBg{
     position:fixed;
     width: 100%;
     height: 100%;
@@ -606,12 +592,19 @@ input[type="checkbox"]{
     z-index: 2000;
 }
 
-#innerAlertDiv{
+#outerAlert{
+    z-index: 2002!important;
+}
+
+#outerEdit{
+    z-index: 2001;
+}
+
+#alertDiv, #editDiv{
     width: 80%;
     height: 80%;
     max-width: 20rem;
     max-height: 15rem;
-    z-index: 2001;
     background-color: var(--div);
     display: flex;
     flex-direction: column;
@@ -641,8 +634,24 @@ input[type="checkbox"]{
     margin: auto;
 }
 
-.editBtn, .closeBtn{
-    border: 1px solid var(--divText);
+#editInputs{ 
+    width: auto;
+    display: flex;
+    justify-content: center;  
+    align-items: center;
+    flex-direction: column;
+}
+
+#editDiv input {
+    margin: auto 0;
+    display: block;
+    width: 80%;
+    margin-bottom: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.editBtn, .closeBtn, .editSubBtn, .deleteSubBtn, .addBtn{
+    border: 2px solid var(--divText);
     padding: 0;
     margin-left: 0.5rem;
     cursor: pointer;
@@ -652,6 +661,7 @@ input[type="checkbox"]{
     display: flex;
     align-items: center;
     justify-content: center;
+
 }
 
 .closeBtn{
@@ -679,4 +689,44 @@ input[type="checkbox"]{
     justify-content: center;
     width: 20rem;
     height: 10rem;
+}
+
+.editSubBtn{
+    background-color: var(--yellow);
+    color: rgb(255, 255, 255);
+} 
+.deleteSubBtn{
+    background-color: var(--red);
+} 
+.addBtn{
+    background-color: var(--green);
+}
+.subHeadDiv{
+    display: inline-flex;
+    flex-direction: row;
+}
+.subH2{
+    width: 100%;
+    text-align: center;
+    margin: 1rem;
+}
+.editSubBtn, .deleteSubBtn, .addBtn{
+    margin: 0.5rem;
+}
+.sizeBtn{
+    background-color: transparent;
+    width: 3rem!important;
+    height: 3rem!important;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.sizeBtn svg{
+    width: 100%;
+    height: 100%;
 }

@@ -1,8 +1,8 @@
 import { StudySubject, subArrObj, sessionArray, sortSubs, sortTasks } from './classModule.js';
 import renderObject from './renderModule.js';
-import { inputCollector, subGenFunction, taskGenFunction, customError } from './renderModule.js';
+import { inputCollector, subGenFunction, taskGenFunction, customError, editObject } from './renderModule.js';
 
-const intervalFunction = (stateObj) => {
+const intervalFunction = (stateObj, objective) => {
     stateObj.session.interval.active = true;
     stateObj.session.interval.sessionInterval = setInterval(()=>{
         stateObj.session.interval._intervalState--; // count
@@ -11,11 +11,20 @@ const intervalFunction = (stateObj) => {
         if(stateObj.session.interval._intervalState === 0 || stateObj.session.interval.pauseInterval === true || stateObj.session.interval.skipInterval === true){ //check for condition to finish
             clearInterval(stateObj.session.interval.sessionInterval);
             stateObj.session.interval.active = false;
-            stateObj.session.interval.skipInterval = false;
+            if(stateObj.session.interval.skipInterval === true){
+                stateObj.session.interval._intervalState = 0;
+            }
+            if(stateObj.session.interval._intervalState === 0 || stateObj.session.interval.skipInterval === true){
+                if(objective === 'break'){
+                    stateObj.session.incBreaksDone();
+                }else{
+                    stateObj.session.incSessionsDone();
+                }
+            }
             renderObject.sessionNavButtons(stateObj);
             console.log('stopped at: ' + stateObj.session.interval._intervalState )
         }
-        renderObject.sessionInterval();
+        renderObject.sessionInterval(state);
     }, 1000);
 }
 
@@ -157,7 +166,7 @@ export const state = {
 
         start(){ //start session 
             this.interval.setIntervalState(this._sessionLength); //assign countdown
-            intervalFunction(state);
+            intervalFunction(state, 'study');
         },
         next(){
             console.log('next');
@@ -167,31 +176,38 @@ export const state = {
                     console.log('_intervalState === 0');
                     if(this._breaks){ //breaks - check if session or break
                         if(this._sessionsDone === this._breaksDone){//when coming out of a session
-                            this.incSessionsDone();
-                            subArrObj.subArray[0].practicedAmount ++;
-                            this.subjectsStudied.push(this._subject);
-                            sortSubs();
-                            this.setSubject();
-                            this.interval.setIntervalState(this._breakLength);
-                            this.nextObjective = 'break';
-                            intervalFunction(state);
+                            if(this._sessionsDone === this._sessionAmount){
+                                this.finish();
+                            } else {
+                                subArrObj.subArray[0].practicedAmount ++;
+                                this.subjectsStudied.push(this._subject);
+                                sortSubs();
+                                this.setSubject();
+                                this.interval.setIntervalState(this._breakLength);
+                                this.nextObjective = 'break';
+                                intervalFunction(state, 'break');
+                            }
                         } else{ // when coming out of a break
-                            this.incBreaksDone();
                             this.interval.setIntervalState(this._sessionLength);
                             this.nextObjective = 'study';
-                            intervalFunction(state);
+                            intervalFunction(state, 'study');
                         }
                     }else{ //no breaks - instant continue
-                        this.incSessionsDone();
                         subArrObj.subArray[0].practicedAmount ++;
                         sortSubs();
                         this.subject();
                         this.interval.setIntervalState(this._sessionLength);
-                        intervalFunction(state);
+                        intervalFunction(state, 'study');
                     }
                 } else{ //continue countdown
                     console.log('continue')
-                    intervalFunction(state);
+                    let objective;
+                    if(this._sessionsDone === this._breaksDone){
+                        objective = 'study';
+                    } else {
+                        objective = 'break';
+                    }
+                    intervalFunction(state, objective);
                 }
             }
             renderObject.renderSessionSubject(state);
@@ -208,14 +224,18 @@ const eventListeners = [
         target: "#startSession",
         event: "click",
         handle: () => {
-            state.session.reset();
-            state.session.breaks = inputCollector.breakInput();
-            state.session.sessionLength = inputCollector.sessionLength();
-            state.session.totalLength = inputCollector.totalLength();
-            state.session.calcSessionAmount();
-            state.state = 'session';
-            console.log('navigate to session');
-            console.log(state.session);
+            if(inputCollector.sessionLength() <= inputCollector.totalLength()){
+                state.session.reset();
+                state.session.breaks = inputCollector.breakInput();
+                state.session.sessionLength = inputCollector.sessionLength();
+                state.session.totalLength = inputCollector.totalLength();
+                state.session.calcSessionAmount();
+                state.state = 'session';
+                console.log('navigate to session');
+                console.log(state.session);
+            } else{
+                renderObject.customError('sessionLength')
+            }
         }
     }
     ,{
@@ -226,7 +246,7 @@ const eventListeners = [
                 if(new Date(inputCollector.subDate()) > new Date(Date.now())){
                     let newSub = new StudySubject(inputCollector.subName(), inputCollector.subDate(), inputCollector.subConfidence());
                     localStorage.setItem("subArray",JSON.stringify(subArrObj.subArray))
-                    subGenFunction([newSub], document.getElementById('subUl'), false);
+                    subGenFunction(subArrObj.subArray, document.getElementById('subUl'), false);
                     inputCollector.clearSubInputs();
                 } else{
                     customError('newSubDate');
@@ -250,6 +270,40 @@ const eventListeners = [
         handle: () => {
             state.state = 'home';
             console.log('navigate to expanded sublist');
+        }
+    }
+    ,{
+        target: "#alertOkButton",
+        event: "click",
+        handle: () => {
+            document.getElementById('outerAlert').classList.add('hidden');
+        }
+    }
+    ,{
+        target: "#editApplyBtn",
+        event: "click",
+        handle: () => {
+                if(new Date(document.getElementById('editDateInput').value) > new Date(Date.now())){
+                    if(editObject.type === 'subject'){
+                        const index = subArrObj.subArray.indexOf(editObject.subject);
+                        subArrObj.subArray[index].dueDate = document.getElementById('editDateInput').value;
+                    }else{
+                        const index = subArrObj.subArray.indexOf(editObject.subject);
+                        const taskIndex = subArrObj.subArray[index].tasks.indexOf(editObject.object);
+                        subArrObj.subArray[index].tasks[taskIndex].name = document.getElementById('editNameInput').value.toLowerCase().trim();
+                        subArrObj.subArray[index].tasks[taskIndex].dueDate = document.getElementById('editDateInput').value;
+                    }
+                    document.getElementById('editInputs').innerHTML = '';
+                    document.getElementById('outerEdit').classList.add('hidden');
+                    localStorage.setItem("subArray",JSON.stringify(subArrObj.subArray));
+                    if(state._state === 'home'){
+                        subGenFunction(subArrObj.subArray, subUl, false);
+                    } else{
+                        subGenFunction(subArrObj.subArray, subUlDivExtended, true);
+                    }
+                } else{
+                    customError('newSubDate');
+                }
         }
     }
     /*

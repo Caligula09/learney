@@ -14,8 +14,10 @@ const div8 = document.getElementById('div8'); //in session task div (task list, 
 const divs = [div1, div2, div3, div4, div5, subListDiv, div6extended, div7, div8];
 const homeDivs = [div3, div4, div5, subListDiv];
 const sessionDivs = [div1, div2, div7, div8];
-const alertDiv = document.getElementById('alertDiv');
-
+const alertDiv = document.getElementById('outerAlert');
+const editDiv = document.getElementById('outerEdit');
+const editInputDiv = document.getElementById('editInputs')
+const progressor = document.getElementById('progressor');
 let subUl = document.getElementById('subUl');//add children to this ul for new subjects (let bc must be accessible/updatable in addSubject function)
 let subUlDivExtended = document.getElementById('subUlDivExtended');
 const subTaskList = document.getElementById('subTaskList');
@@ -53,17 +55,18 @@ export const subGenFunction = (subArr, container, bool) => {
     const subDiv = document.createElement('div');
     subDiv.classList.add('subDiv');
     container.appendChild(subDiv);
+    //h2
+    const subH2 = document.createElement('h2');
+    subH2.classList.add('subH2')
+    subH2.textContent = sub.name.toUpperCase() + ' ' +sub.dueDate;
+    subDiv.appendChild(subH2);
     //sub head
     const subHeadDiv = document.createElement('div');
     subHeadDiv.classList.add('subHeadDiv');
     subDiv.appendChild(subHeadDiv);
-    //h2
-    const subH2 = document.createElement('h2');
-    subH2.textContent = sub.name.toUpperCase() + sub.dueDate;
-    subHeadDiv.appendChild(subH2);
     //delete
     const deleteSubBtn = document.createElement('button');
-    deleteSubBtn.classList.add('deleteBtn');
+    deleteSubBtn.classList.add('deleteSubBtn');
     deleteSubBtn.insertAdjacentHTML('beforeend', '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M261-120q-24.75 0-42.37-17.63Q201-155.25 201-180v-570h-11q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h158q0-13 8.63-21.5 8.62-8.5 21.37-8.5h204q12.75 0 21.38 8.62Q612-822.75 612-810h158q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5h-11v570q0 24.75-17.62 42.37Q723.75-120 699-120H261Zm438-630H261v570h438v-570ZM418.5-274.63q8.5-8.62 8.5-21.37v-339q0-12.75-8.68-21.38-8.67-8.62-21.5-8.62-12.82 0-21.32 8.62-8.5 8.63-8.5 21.38v339q0 12.75 8.68 21.37 8.67 8.63 21.5 8.63 12.82 0 21.32-8.63Zm166 0q8.5-8.62 8.5-21.37v-339q0-12.75-8.68-21.38-8.67-8.62-21.5-8.62-12.82 0-21.32 8.62-8.5 8.63-8.5 21.38v339q0 12.75 8.68 21.37 8.67 8.63 21.5 8.63 12.82 0 21.32-8.63ZM261-750v570-570Z"/></svg>');
     deleteSubBtn.addEventListener('click', () => {
         subDiv.remove();
@@ -73,14 +76,22 @@ export const subGenFunction = (subArr, container, bool) => {
 
     });
     subHeadDiv.appendChild(deleteSubBtn);
+    //edit
+    const editSubBtn = document.createElement('button');
+    editSubBtn.classList.add('editSubBtn');
+    editSubBtn.insertAdjacentHTML('beforeend', '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M180-180h44l472-471-44-44-472 471v44Zm-30 60q-13 0-21.5-8.5T120-150v-73q0-12 5-23.5t13-19.5l557-556q8-8 19-12.5t23-4.5q11 0 22 4.5t20 12.5l44 44q9 9 13 20t4 22q0 11-4.5 22.5T823-694L266-138q-8 8-19.5 13t-23.5 5h-73Zm629-617-41-41 41 41Zm-105 64-22-22 44 44-22-22Z"/></svg>');
+    editSubBtn.addEventListener('click', () => {
+        editFunction(sub, sub, 'subject');
+    });
+    subHeadDiv.appendChild(editSubBtn);
     //if tasks need to be generated
     if(bool === true){
-        taskGenFunction(subDiv, sub);
+        taskGenFunction(subDiv, sub, subHeadDiv);
     }
     }
 }
 
-export const taskGenFunction = (container, sub) => {
+export const taskGenFunction = (container, sub, btnDiv) => {
     //add button
     const addTaskBtn = document.createElement('button');
     addTaskBtn.classList.add('addBtn');
@@ -92,7 +103,7 @@ export const taskGenFunction = (container, sub) => {
             customError('openTaskInput');
         }
     });
-    container.appendChild(addTaskBtn);
+    btnDiv.appendChild(addTaskBtn);
     //ul container
     const divContainer = document.createElement('div');
     divContainer.classList.add('tgContainerDiv');
@@ -124,11 +135,6 @@ const addTaskEventFunction = (container, sub) => {
             }
         }
     });
-}
-
-const editTaskEventFunction = (task) => {
-    //edit features
-
 }
 
 export const generateTaskLi = (ul, task, sub) => {
@@ -173,12 +179,12 @@ export const generateTaskLi = (ul, task, sub) => {
     editBtn.classList.add('editBtn');
     editBtn.insertAdjacentHTML('beforeend', '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M180-180h44l472-471-44-44-472 471v44Zm-30 60q-13 0-21.5-8.5T120-150v-73q0-12 5-23.5t13-19.5l557-556q8-8 19-12.5t23-4.5q11 0 22 4.5t20 12.5l44 44q9 9 13 20t4 22q0 11-4.5 22.5T823-694L266-138q-8 8-19.5 13t-23.5 5h-73Zm629-617-41-41 41 41Zm-105 64-22-22 44 44-22-22Z"/></svg>');
     editBtn.addEventListener('click', () => {
-        editTaskEventFunction(task);
+        editFunction(sub, task, 'task');
     });
     li.appendChild(editBtn);
 }
 
-
+const lang = localStorage.getItem('lang') || 'de';
 //function
 const renderObject = {
 
@@ -197,6 +203,7 @@ const renderObject = {
             sessionDivs.forEach(div=>div.classList.remove('hidden'));
             this.renderSessionSubject(stateObj);
             this.sessionNavButtons(stateObj);
+            this.sessionInterval(stateObj);
         } else if (stateObj._state === 'subList'){
             console.log('subList');
             //only show state's div(s)
@@ -228,7 +235,7 @@ const renderObject = {
     renderSessionSubject(stateObj){
         currentTask.textContent = subArrObj.subArray[0].name.toUpperCase();
         subTaskList.innerHTML = '';
-        taskGenFunction(subTaskList, subArrObj.subArray[0]);
+        taskGenFunction(subTaskList, subArrObj.subArray[0], subTaskList);
         stateH1.textContent = stateObj.session.nextObjective.toUpperCase();
     },
     _navController: null,
@@ -238,9 +245,16 @@ const renderObject = {
         }
         this._navController = new AbortController();
         const { signal } = this._navController;
-        const lang = localStorage.getItem('lang') || 'de';
 
-        if(stateObj.session.interval._intervalState === 0){
+        if(stateObj.session._sessionsDone === stateObj.session._sessionAmount){
+            leftSessionBtn.classList.add('hidden');
+            rightSessionBtn.textContent = translations[lang]['finish_session'];
+            rightSessionBtn.addEventListener('click',()=>{
+                //stateObj.session.interval.skipInterval = false;
+                stateObj.session.step();
+                leftSessionBtn.classList.remove('hidden');
+            }, { signal });
+        }else if(stateObj.session.interval._intervalState === 0){
             leftSessionBtn.textContent = translations[lang]['exit_session'];
             leftSessionBtn.addEventListener('click',()=>{
                 stateObj.state = 'home';
@@ -272,8 +286,31 @@ const renderObject = {
         }
     },
 
-    sessionInterval(){
-
+    sessionInterval(state){
+        let overall;
+        if(state.session.breaks){
+            if(state.session._breaksDone === state.session._sessionsDone){
+                overall = state.session._sessionLength;
+            } else{
+                overall = state.session._breakLength;
+            }
+        } else{
+            overall = state.session._sessionLength;
+        }
+        progressor.style.width = `${(overall - state.session.interval._intervalState) / overall + 0.1}%`
+        console.log(progressor.style.width)
+        const timerMinsTextContent = `${Math.floor(state.session.interval._intervalState / 60)}`
+        if(timerMinsTextContent[1]){
+            timerMins.textContent = timerMinsTextContent
+        } else{
+            timerMins.textContent = '0' + timerMinsTextContent;
+        }
+        const timerSecsTextContent = `${state.session.interval._intervalState % 60}`
+        if(timerSecsTextContent[1]){
+            timerSecs.textContent = timerSecsTextContent
+        } else{
+            timerSecs.textContent = '0' + timerSecsTextContent;
+        }
     }
 }
 
@@ -309,15 +346,20 @@ export const inputCollector = {
 }
 
 export const customError = (error) => {
+    let h2Message;
     if(error === 'newSubName'){
-        console.log('eN');
+        h2Message = translations[lang]['sub_name_error'];
     }else if(error === 'newSubDate'){
-        console.log('eD');
+        h2Message = translations[lang]['no_date_alert'];
     } else if (error === 'openTaskInput'){
-        console.log('eOTI');
+        h2Message = translations[lang]['open_task_input_alert'];
     } else if (error === 'taskMinLength'){
-        console.log('eTML');
+        h2Message = translations[lang]['min_length_alert'];
+    } else if (error === 'sessionLength'){
+        h2Message = translations[lang]['session_length_error'];
     }
+    alertDiv.classList.remove('hidden');
+    alertH2.textContent = h2Message;
     /*
     else if (error === ''){
         console.log('e');
@@ -325,6 +367,42 @@ export const customError = (error) => {
     */
     
     
+}
+
+export let editObject = {subject: null, object: null, type: null};
+
+const editFunction = (subject, object, type) => {
+    editObject.subject = subject;
+    editObject.object = object;
+    editObject.type = type;
+    editDiv.classList.remove('hidden');
+    if(type === 'subject'){
+
+    } else if (type === 'task'){
+        const nameLabel = document.createElement('label');
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.value = object.name.toUpperCase();
+        nameInput.id = 'editNameInput';
+        nameLabel.textContent = translations[lang]['name'];
+        nameLabel.for = 'editNameInput';
+        editInputDiv.appendChild(nameLabel);
+        editInputDiv.appendChild(nameInput);
+    }
+    const dateLabel = document.createElement('label');
+    const dateInput =  document.createElement('input');
+    dateInput.type = 'date';
+    dateInput.value = object.dueDate;
+    dateInput.id = 'editDateInput';
+    dateLabel.textContent = translations[lang]['date'];
+    dateLabel.for = 'editDateInput';
+    editInputDiv.appendChild(dateLabel);
+    editInputDiv.appendChild(dateInput);
+    if(type === 'subject'){
+
+    } else if (type === 'task'){
+
+    }
 }
 
 export default renderObject; // export to stateObjectModule.js

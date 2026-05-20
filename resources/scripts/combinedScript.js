@@ -5,7 +5,7 @@ import {state} from './modules/stateObjectModule.js';
 import { calcUrgency, addTask, sortTasks, calcDaysLeft, sortSubs, subArrObj } from "./modules/classModule.js";
 import { StudySubject, Task } from './modules/classModule.js';
 
-import { subGenFunction } from './modules/renderModule.js';
+import { subGenFunction, editObject } from './modules/renderModule.js';
 
 console.log(state);
 console.log(eventListeners);

@@ -102,10 +102,10 @@
                 <button id="addNewSub" data-i18n="new_add"></button>
             </div>
             <div id="div6" class="hidden">
-                <button id="subListExpandBtn">
+                <h2 data-i18n="your_subs"></h2>
+                <button id="subListExpandBtn" class="sizeBtn">
                     <svg xmlns="http://www.w3.org/2000/svg" id="expandSubList" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M260-260h150q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H230q-12.75 0-21.37-8.63Q200-217.25 200-230v-180q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v150Zm440-440H550q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h180q12.75 0 21.38 8.62Q760-742.75 760-730v180q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-150Z"/></svg>
                 </button>
-                <h2 data-i18n="your_subs"></h2>
                 <div id="subUlDiv">
                     <ul id="subUl">
 
@@ -113,7 +113,7 @@
                 </div>
             </div>
             <div id="div6extended" class="hidden">
-                <button id="subListCollapseBtn">
+                <button id="subListCollapseBtn" class="sizeBtn">
                     <svg xmlns="http://www.w3.org/2000/svg" id="collapseSubList" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M380-380H230q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h180q12.75 0 21.38 8.62Q440-422.75 440-410v180q0 12.75-8.68 21.37-8.67 8.63-21.5 8.63-12.82 0-21.32-8.63-8.5-8.62-8.5-21.37v-150Zm200-200h150q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H550q-12.75 0-21.37-8.63Q520-537.25 520-550v-180q0-12.75 8.68-21.38 8.67-8.62 21.5-8.62 12.82 0 21.32 8.62 8.5 8.63 8.5 21.38v150Z"/></svg>
                 </button>
                 <h2 data-i18n="your_subs" id="extendedSubsH2"></h2>
@@ -139,15 +139,19 @@
             </div>
             
         </main>
-        <div id="alertDiv" class="hidden">
-            <div id="innerAlertDiv">
+        <div class="divBg hidden" id="outerAlert">
+            <div id="alertDiv">
                 <h2 id="alertH2"></h2>
                 <button id="alertOkButton">OK</button>
             </div>
         </div>
+        <div class="divBg hidden" id="outerEdit">
+            <div id="editDiv">
+                <div id="editInputs">
 
-        <div id="temporaryDivContainer">
-
+                </div>
+                <button id="editApplyBtn" data-i18n="save"></button>
+            </div>
         </div>
         
         <script src="./resources/scripts/translationScript.js"></script>
