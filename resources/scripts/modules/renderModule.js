@@ -320,8 +320,10 @@ export const inputCollector = {
     breakInput(){
         if(breaksYes.checked){
             return true;
+            console.log('true')
         } else {
             return false;
+            console.log('false')
         }
     },
     sessionLength(){
@@ -403,7 +405,19 @@ const editFunction = (subject, object, type) => {
     if(type === 'subject'){
 
     } else if (type === 'task'){
-
+        //description input
+        const descriptionInput = document.createElement('input');
+        const descriptionInputLabel = document.createElement('label');
+        descriptionInput.type = 'textarea';
+        descriptionInput.id = 'editDescriptionInput'
+        descriptionInput.placeholder = translations[lang]['description'];
+        descriptionInputLabel.for = 'editDescriptionInput';
+        descriptionInputLabel.textContent = translations[lang]['description_label'];
+        if(object.description[0]){
+            descriptionInput.value = object.description;
+        }
+        editInputDiv.appendChild(descriptionInputLabel);
+        editInputDiv.appendChild(descriptionInput);
     }
 }
 

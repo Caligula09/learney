@@ -602,9 +602,9 @@ input[type="checkbox"]{
 
 #alertDiv, #editDiv{
     width: 80%;
-    height: 80%;
+    height: auto;
     max-width: 20rem;
-    max-height: 15rem;
+    max-height: 25rem;
     background-color: var(--div);
     display: flex;
     flex-direction: column;
@@ -712,6 +712,7 @@ input[type="checkbox"]{
 }
 .editSubBtn, .deleteSubBtn, .addBtn{
     margin: 0.5rem;
+    border: none;
 }
 .sizeBtn{
     background-color: transparent;

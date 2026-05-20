@@ -126,6 +126,8 @@ const translations = {
         save: 'Speichern',
         name: "Name:",
         date: "Datum:",
+        description: 'Beschreibe deine Aufgabe...',
+        description_label: 'Beschreibung:',
 
         //alerts
         no_double_alert: "Du kannst das selbe Fach nicht zwei Mal eingeben. Bitte nutze etwas anderes.",
@@ -268,6 +270,8 @@ const translations = {
         save: 'Save',
         name: "Name:",
         date: "Date:",
+        description: 'Write a description...',
+        description_label: 'Description:',
 
         //alerts
         no_double_alert: "You can't enter the same subject twice. Please use something else.",

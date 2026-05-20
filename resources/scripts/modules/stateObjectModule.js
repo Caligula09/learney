@@ -20,6 +20,7 @@ const intervalFunction = (stateObj, objective) => {
                 }else{
                     stateObj.session.incSessionsDone();
                 }
+                console.log(stateObj.session);
             }
             renderObject.sessionNavButtons(stateObj);
             console.log('stopped at: ' + stateObj.session.interval._intervalState )
@@ -84,8 +85,8 @@ export const state = {
         finished: false,
         subjectsStudied: [],
         reset(){
-            this._subject= subArrObj.subArray[0];
-            this._breaks= null;
+            this._subject = subArrObj.subArray[0];
+            this._breaks = null;
             this._timeSpent= 0;
             this._sessionAmount= 0;
             this._sessionsDone= 0;
@@ -175,11 +176,15 @@ export const state = {
                 if(this.interval._intervalState === 0){//go to next 
                     console.log('_intervalState === 0');
                     if(this._breaks){ //breaks - check if session or break
-                        if(this._sessionsDone === this._breaksDone){//when coming out of a session
+                        if(this._sessionsDone === this._breaksDone){//when coming out of a break
+                            subArrObj.subArray[0].practicedAmount ++;
+                            this.interval.setIntervalState(this._sessionLength);
+                            this.nextObjective = 'study';
+                            intervalFunction(state, 'study');
+                        } else{ // when coming out of a session
                             if(this._sessionsDone === this._sessionAmount){
                                 this.finish();
                             } else {
-                                subArrObj.subArray[0].practicedAmount ++;
                                 this.subjectsStudied.push(this._subject);
                                 sortSubs();
                                 this.setSubject();
@@ -187,15 +192,11 @@ export const state = {
                                 this.nextObjective = 'break';
                                 intervalFunction(state, 'break');
                             }
-                        } else{ // when coming out of a break
-                            this.interval.setIntervalState(this._sessionLength);
-                            this.nextObjective = 'study';
-                            intervalFunction(state, 'study');
                         }
                     }else{ //no breaks - instant continue
                         subArrObj.subArray[0].practicedAmount ++;
                         sortSubs();
-                        this.subject();
+                        this.setSubject();
                         this.interval.setIntervalState(this._sessionLength);
                         intervalFunction(state, 'study');
                     }
@@ -292,6 +293,7 @@ const eventListeners = [
                         const taskIndex = subArrObj.subArray[index].tasks.indexOf(editObject.object);
                         subArrObj.subArray[index].tasks[taskIndex].name = document.getElementById('editNameInput').value.toLowerCase().trim();
                         subArrObj.subArray[index].tasks[taskIndex].dueDate = document.getElementById('editDateInput').value;
+                        subArrObj.subArray[index].tasks[taskIndex].description = document.getElementById('editDescriptionInput').value;
                     }
                     document.getElementById('editInputs').innerHTML = '';
                     document.getElementById('outerEdit').classList.add('hidden');
