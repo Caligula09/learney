@@ -50,44 +50,46 @@ const inSessionTaskAdder = document.getElementById('inSessionTaskAdder'); //  ?
 
 export const subGenFunction = (subArr, container, bool) => {
     container.innerHTML = "";
-    for(let sub of subArr){
-    //sub container
-    const subDiv = document.createElement('div');
-    subDiv.classList.add('subDiv');
-    container.appendChild(subDiv);
-    //h2
-    const subH2 = document.createElement('h2');
-    subH2.classList.add('subH2')
-    subH2.textContent = sub.name.toUpperCase() + ' ' +sub.dueDate;
-    subDiv.appendChild(subH2);
-    //sub head
-    const subHeadDiv = document.createElement('div');
-    subHeadDiv.classList.add('subHeadDiv');
-    subDiv.appendChild(subHeadDiv);
-    //delete
-    const deleteSubBtn = document.createElement('button');
-    deleteSubBtn.classList.add('deleteSubBtn');
-    deleteSubBtn.insertAdjacentHTML('beforeend', '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M261-120q-24.75 0-42.37-17.63Q201-155.25 201-180v-570h-11q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h158q0-13 8.63-21.5 8.62-8.5 21.37-8.5h204q12.75 0 21.38 8.62Q612-822.75 612-810h158q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5h-11v570q0 24.75-17.62 42.37Q723.75-120 699-120H261Zm438-630H261v570h438v-570ZM418.5-274.63q8.5-8.62 8.5-21.37v-339q0-12.75-8.68-21.38-8.67-8.62-21.5-8.62-12.82 0-21.32 8.62-8.5 8.63-8.5 21.38v339q0 12.75 8.68 21.37 8.67 8.63 21.5 8.63 12.82 0 21.32-8.63Zm166 0q8.5-8.62 8.5-21.37v-339q0-12.75-8.68-21.38-8.67-8.62-21.5-8.62-12.82 0-21.32 8.62-8.5 8.63-8.5 21.38v339q0 12.75 8.68 21.37 8.67 8.63 21.5 8.63 12.82 0 21.32-8.63ZM261-750v570-570Z"/></svg>');
-    deleteSubBtn.addEventListener('click', () => {
-        subDiv.remove();
-        subArrObj.subArray = subArrObj.subArray.filter(subA => subA.name !== sub.name);
-        localStorage.setItem('subArray', JSON.stringify(subArrObj.subArray));
-        console.log(subArrObj.subArray);
+    if(subArr[0]){
+        for(let sub of subArr){
+            //sub container
+            const subDiv = document.createElement('div');
+            subDiv.classList.add('subDiv');
+            container.appendChild(subDiv);
+            //h2
+            const subH2 = document.createElement('h2');
+            subH2.classList.add('subH2')
+            subH2.textContent = sub.name.toUpperCase() + ' ' +sub.dueDate;
+            subDiv.appendChild(subH2);
+            //sub head
+            const subHeadDiv = document.createElement('div');
+            subHeadDiv.classList.add('subHeadDiv');
+            subDiv.appendChild(subHeadDiv);
+            //delete
+            const deleteSubBtn = document.createElement('button');
+            deleteSubBtn.classList.add('deleteSubBtn');
+            deleteSubBtn.insertAdjacentHTML('beforeend', '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M261-120q-24.75 0-42.37-17.63Q201-155.25 201-180v-570h-11q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h158q0-13 8.63-21.5 8.62-8.5 21.37-8.5h204q12.75 0 21.38 8.62Q612-822.75 612-810h158q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5h-11v570q0 24.75-17.62 42.37Q723.75-120 699-120H261Zm438-630H261v570h438v-570ZM418.5-274.63q8.5-8.62 8.5-21.37v-339q0-12.75-8.68-21.38-8.67-8.62-21.5-8.62-12.82 0-21.32 8.62-8.5 8.63-8.5 21.38v339q0 12.75 8.68 21.37 8.67 8.63 21.5 8.63 12.82 0 21.32-8.63Zm166 0q8.5-8.62 8.5-21.37v-339q0-12.75-8.68-21.38-8.67-8.62-21.5-8.62-12.82 0-21.32 8.62-8.5 8.63-8.5 21.38v339q0 12.75 8.68 21.37 8.67 8.63 21.5 8.63 12.82 0 21.32-8.63ZM261-750v570-570Z"/></svg>');
+            deleteSubBtn.addEventListener('click', () => {
+                subDiv.remove();
+                subArrObj.subArray = subArrObj.subArray.filter(subA => subA.name !== sub.name);
+                localStorage.setItem('subArray', JSON.stringify(subArrObj.subArray));
+                console.log(subArrObj.subArray);
 
-    });
-    subHeadDiv.appendChild(deleteSubBtn);
-    //edit
-    const editSubBtn = document.createElement('button');
-    editSubBtn.classList.add('editSubBtn');
-    editSubBtn.insertAdjacentHTML('beforeend', '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M180-180h44l472-471-44-44-472 471v44Zm-30 60q-13 0-21.5-8.5T120-150v-73q0-12 5-23.5t13-19.5l557-556q8-8 19-12.5t23-4.5q11 0 22 4.5t20 12.5l44 44q9 9 13 20t4 22q0 11-4.5 22.5T823-694L266-138q-8 8-19.5 13t-23.5 5h-73Zm629-617-41-41 41 41Zm-105 64-22-22 44 44-22-22Z"/></svg>');
-    editSubBtn.addEventListener('click', () => {
-        editFunction(sub, sub, 'subject');
-    });
-    subHeadDiv.appendChild(editSubBtn);
-    //if tasks need to be generated
-    if(bool === true){
-        taskGenFunction(subDiv, sub, subHeadDiv);
-    }
+            });
+            subHeadDiv.appendChild(deleteSubBtn);
+            //edit
+            const editSubBtn = document.createElement('button');
+            editSubBtn.classList.add('editSubBtn');
+            editSubBtn.insertAdjacentHTML('beforeend', '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M180-180h44l472-471-44-44-472 471v44Zm-30 60q-13 0-21.5-8.5T120-150v-73q0-12 5-23.5t13-19.5l557-556q8-8 19-12.5t23-4.5q11 0 22 4.5t20 12.5l44 44q9 9 13 20t4 22q0 11-4.5 22.5T823-694L266-138q-8 8-19.5 13t-23.5 5h-73Zm629-617-41-41 41 41Zm-105 64-22-22 44 44-22-22Z"/></svg>');
+            editSubBtn.addEventListener('click', () => {
+                editFunction(sub, sub, 'subject');
+            });
+            subHeadDiv.appendChild(editSubBtn);
+            //if tasks need to be generated
+            if(bool === true){
+                taskGenFunction(subDiv, sub, subHeadDiv);
+            }
+        }
     }
 }
 
