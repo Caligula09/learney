@@ -19,6 +19,9 @@ const intervalFunction = (stateObj, objective) => {
                     stateObj.session.incBreaksDone();
                 }else{
                     stateObj.session.incSessionsDone();
+                    subArrObj.subArray[0].practicedAmount ++;
+                    sortSubs();
+                    renderObject.renderSessionSubject(state);
                 }
                 console.log(stateObj.session);
             }
@@ -177,7 +180,7 @@ export const state = {
                     console.log('_intervalState === 0');
                     if(this._breaks){ //breaks - check if session or break
                         if(this._sessionsDone === this._breaksDone){//when coming out of a break
-                            subArrObj.subArray[0].practicedAmount ++;
+
                             this.interval.setIntervalState(this._sessionLength);
                             this.nextObjective = 'study';
                             intervalFunction(state, 'study');
@@ -186,7 +189,6 @@ export const state = {
                                 this.finish();
                             } else {
                                 this.subjectsStudied.push(this._subject);
-                                sortSubs();
                                 this.setSubject();
                                 this.interval.setIntervalState(this._breakLength);
                                 this.nextObjective = 'break';

@@ -147,6 +147,7 @@ main div{
 
 #timeH1, #dateH1 {
     font-size: 1.4rem;
+    border-bottom: 4px solid var(--header);
 }
 
 
@@ -174,13 +175,21 @@ main div{
 }
 
 #div3{
-    grid-area: 1 / 1 / 2 / 4;
+    grid-area: 1 / 1 / 2 / 2;
     z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
     padding: 1rem;
+}
+
+#appsDiv{
+    grid-area: 1 / 2 / 2 / 4;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 #div3 h2{
@@ -516,7 +525,7 @@ input[type="checkbox"]{
 
 @media screen and (max-width: 650px){
     main{
-        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-rows: repeat(1fr, 9);
         grid-template-columns: 100%;
         overflow-y: scroll;
     }
@@ -541,6 +550,10 @@ input[type="checkbox"]{
         grid-row-end: 2;
         height: 6rem;
     }
+    #appsDiv{
+        grid-area: 8 / 1 / 9 / 2;
+        height: 8rem;
+    }
     #div4{
         grid-column-start: 1;
         grid-column-end: 2;
@@ -556,7 +569,7 @@ input[type="checkbox"]{
         height: 20rem;
     }
     #div6{
-        grid-area: 7 / 1 / 9 / 2;
+        grid-area: 7 / 1 / 8 / 2;
         height: 20rem;
         justify-content: center;
         align-items: center!important;
@@ -694,12 +707,15 @@ input[type="checkbox"]{
 .editSubBtn{
     background-color: var(--yellow);
     color: rgb(255, 255, 255);
+    border-bottom: 4px solid var(--darkYellow)!important;
 } 
 .deleteSubBtn{
     background-color: var(--red);
+    border-bottom: 4px solid var(--darkRed)!important;
 } 
 .addBtn{
     background-color: var(--green);
+    border-bottom: 4px solid var(--darkGreen)!important;
 }
 .subHeadDiv{
     display: inline-flex;
@@ -714,6 +730,9 @@ input[type="checkbox"]{
     margin: 0.5rem;
     border: none;
 }
+button:active{
+    transform: translateY(3px);
+}
 .sizeBtn{
     background-color: transparent;
     width: 3rem!important;
@@ -722,7 +741,8 @@ input[type="checkbox"]{
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid white;
+    border-bottom: 4px solid var(--bg);
+    outline: 1.5px solid white;
     position: absolute;
     top: 0;
     right: 0;

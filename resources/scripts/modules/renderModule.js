@@ -11,8 +11,9 @@ const subListDiv = document.getElementById('div6'); //sublist in front page (onl
 const div6extended = document.getElementById('div6extended'); //sublist extended with tasks etc
 const div7 = document.getElementById('div7'); //in session main div (current subject, nav buttons)
 const div8 = document.getElementById('div8'); //in session task div (task list, add task button)
-const divs = [div1, div2, div3, div4, div5, subListDiv, div6extended, div7, div8];
-const homeDivs = [div3, div4, div5, subListDiv];
+const appsDiv = document.getElementById('appsDiv');
+const divs = [div1, div2, div3,appsDiv, div4, div5, subListDiv, div6extended, div7, div8];
+const homeDivs = [div3,appsDiv, div4, div5, subListDiv];
 const sessionDivs = [div1, div2, div7, div8];
 const alertDiv = document.getElementById('outerAlert');
 const editDiv = document.getElementById('outerEdit');
@@ -239,6 +240,11 @@ const renderObject = {
         subTaskList.innerHTML = '';
         taskGenFunction(subTaskList, subArrObj.subArray[0], subTaskList);
         stateH1.textContent = stateObj.session.nextObjective.toUpperCase();
+        if(stateObj.session.nextObjective === 'study'){
+            stateH1.textContent = translations[lang]['study'];
+        } else {
+            stateH1.textContent = translations[lang]['break'];
+        }
     },
     _navController: null,
     sessionNavButtons(stateObj){

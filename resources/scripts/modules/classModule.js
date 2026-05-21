@@ -100,7 +100,7 @@ const sortSubs = () => {
         return a.urgency - b.urgency ;
     }
     subArrObj.subArray.sort(compareUrgency);
-    console.log("New Sorted SubArray: " + subArrObj.subArray);
+    console.log("New Sorted SubArray: " , subArrObj.subArray);
 }
 
 export { StudySubject, Task };

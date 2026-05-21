@@ -110,5 +110,8 @@
     --blue: #2d3e9f; /*used to be #2d3e56*/
     --red: #ff3131;
     --yellow: #ffd166;
-
+    --darkGreen: #298306;
+    --darkBlue: #212d72; /*used to be #2d3e56*/
+    --darkRed: #a51e1e;
+    --darkYellow: #c79c39;
 }
