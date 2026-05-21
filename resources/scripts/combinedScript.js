@@ -1,4 +1,4 @@
-import { renderObject, eventListeners} from './modules/stateObjectModule.js';
+import { renderObject, eventListeners, classEventListeners} from './modules/stateObjectModule.js';
 
 import {state} from './modules/stateObjectModule.js';
 
@@ -24,5 +24,8 @@ eventListeners.forEach(({ target, event, handle}) => {
     document.querySelector(target).addEventListener(event, handle);
 });
 
+classEventListeners.forEach(({ target, event, handle}) => {
+    document.querySelectorAll(target).forEach(element => element.addEventListener(event, handle));
+});
 
 renderObject.renderStates(state);

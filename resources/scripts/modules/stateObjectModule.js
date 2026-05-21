@@ -39,7 +39,7 @@ const saveSession = () => {
 }
 
 export const state = {
-    stateList: ['home', 'session', 'subList'],
+    stateList: ['home', 'session', 'subList', 'calendar', 'studyHistory', 'notes'],
     _state: 'home',
     set state(strOrNum){
         if(typeof strOrNum === 'number'){
@@ -310,6 +310,27 @@ const eventListeners = [
                 }
         }
     }
+    ,{
+        target: "#calendarBtn",
+        event: "click",
+        handle: () => {
+            state.state = 'calendar';
+        }
+    }
+    ,{
+        target: "#studyHistoryBtn",
+        event: "click",
+        handle: () => {
+            state.state = 'studyHistory';
+        }
+    }
+    ,{
+        target: "#notesBtn",
+        event: "click",
+        handle: () => {
+            state.state = 'notes';
+        }
+    }
     /*
     ,{
         target: "",
@@ -317,6 +338,37 @@ const eventListeners = [
         handle: () => {}
     }
     */
+];
+
+export const classEventListeners = [
+    {
+        target: ".appBtn",
+        event: "mouseenter",
+        handle: (event) => {
+            event.target.querySelectorAll('.appName').forEach(item => item.classList.remove('hidden'));
+        }
+    }
+    ,{
+        target: ".appBtn",
+        event: "mouseleave",
+        handle: (event) => {
+            event.target.querySelectorAll('.appName').forEach(item => item.classList.add('hidden'));
+        }
+    },
+    {
+        target: '.returnHomeBtn',
+        event: 'click',
+        handle: () => {
+            state.state = 'home';
+        }
+    },
+    {
+        target: '.constructionInfo',
+        event: 'click',
+        handle: () => {
+            customError('construction');
+        }
+    },
 ];
 
 export { renderObject, eventListeners };

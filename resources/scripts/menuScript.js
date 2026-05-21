@@ -2,18 +2,22 @@ const menuHTML = document.getElementById('menuHTML');
 
 const openMenu = () => {
     document.getElementById('menuHTML').classList.add('open');
+    document.getElementById('menuBg').classList.remove('closed');
 };
 
 const closeMenu = () => {
     document.getElementById('menuHTML').classList.remove('open');
+    document.getElementById('menuBg').classList.add('closed');
 };
 
 const openSettings = () => {
      document.getElementById('settingsSection').classList.remove('closed');
+     document.getElementById('settingsBg').classList.remove('closed');
 };
 
 const closeSettings = () => {
      document.getElementById('settingsSection').classList.add('closed');
+     document.getElementById('settingsBg').classList.add('closed');
 };
 
 
@@ -41,7 +45,12 @@ function initMenuEvents() {
     if (settingsLi) settingsLi.addEventListener("click", openSettings);
     
     const closeSettingsIcon = document.getElementById("closeSettingsIcon");
+    const menuBg = document.getElementById("menuBg");
     if (closeSettingsIcon) closeSettingsIcon.addEventListener("click", closeSettings);
+    if (menuBg) menuBg.addEventListener("click", closeMenu);
+
+    const settingsBg = document.getElementById("settingsBg");
+    if (settingsBg) settingsBg.addEventListener("click", closeSettings);
 
     const en = document.querySelector('#en');
     if (en) {
