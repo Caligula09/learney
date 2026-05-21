@@ -314,7 +314,7 @@ const renderObject = {
 
     sessionInterval(state){
         let overall;
-        if(state.session.breaks){
+        if(state.session._breaks){
             if(state.session._breaksDone === state.session._sessionsDone){
                 overall = state.session._sessionLength;
             } else{
@@ -323,7 +323,7 @@ const renderObject = {
         } else{
             overall = state.session._sessionLength;
         }
-        progressor.style.width = `${(overall - state.session.interval._intervalState) / overall + 0.1}%`
+        progressor.style.width = `${(100 / overall)*(overall - state.session.interval._intervalState)}%`
         console.log(progressor.style.width)
         const timerMinsTextContent = `${Math.floor(state.session.interval._intervalState / 60)}`
         if(timerMinsTextContent[1]){
