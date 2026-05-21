@@ -128,6 +128,9 @@ const translations = {
         date: "Datum:",
         description: 'Beschreibe deine Aufgabe...',
         description_label: 'Beschreibung:',
+        calendar: 'Kalender',
+        study_history: 'Historie',
+        notes: 'Notizen',
 
         //alerts
         no_double_alert: "Du kannst das selbe Fach nicht zwei Mal eingeben. Bitte nutze etwas anderes.",
@@ -140,6 +143,7 @@ const translations = {
         open_task_input_alert: 'Nur ein Input Feld zur Zeit erlaubt',
         min_length_alert: 'Bitte gib mindestens drei Zeichen ein',
         session_length_error: 'Die Lerneinheit darf nicht kürzer als die Gesamtlänge sein',
+        construction: 'Dieser Bereich befinded sich aktuell in der Entwicklung',
     },
 
     en: {
@@ -272,6 +276,9 @@ const translations = {
         date: "Date:",
         description: 'Write a description...',
         description_label: 'Description:',
+        calendar: 'Calendar',
+        study_history: 'History',
+        notes: 'Notes',
 
         //alerts
         no_double_alert: "You can't enter the same subject twice. Please use something else.",
@@ -284,6 +291,7 @@ const translations = {
         open_task_input_alert: 'Only one input at a time allowed',
         min_length_alert: 'Please enter at least three characters',
         session_length_error: 'The session length cannot be smaller than the total length',
+        construction: 'This area is currently in construction',
     }
 };
 

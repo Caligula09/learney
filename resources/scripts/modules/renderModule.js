@@ -12,7 +12,10 @@ const div6extended = document.getElementById('div6extended'); //sublist extended
 const div7 = document.getElementById('div7'); //in session main div (current subject, nav buttons)
 const div8 = document.getElementById('div8'); //in session task div (task list, add task button)
 const appsDiv = document.getElementById('appsDiv');
-const divs = [div1, div2, div3,appsDiv, div4, div5, subListDiv, div6extended, div7, div8];
+const calendarDiv = document.getElementById('calendarDiv');
+const studyHistoryDiv = document.getElementById('studyHistoryDiv');
+const notesDiv = document.getElementById('notesDiv');
+const divs = [div1, div2, div3,appsDiv, calendarDiv, studyHistoryDiv, notesDiv, div4, div5, subListDiv, div6extended, div7, div8];
 const homeDivs = [div3,appsDiv, div4, div5, subListDiv];
 const sessionDivs = [div1, div2, div7, div8];
 const alertDiv = document.getElementById('outerAlert');
@@ -215,6 +218,21 @@ const renderObject = {
             //generate subs with tasks
             subUlDivExtended.innerHTML = '';
             subGenFunction(subArrObj.subArray, subUlDivExtended, true);
+        } else if (stateObj._state === 'calendar'){
+            console.log('calendar');
+            //only show state's div(s)
+            divs.forEach(div=>div.classList.add('hidden'));
+            calendarDiv.classList.remove('hidden');
+        }else if (stateObj._state === 'studyHistory'){
+            console.log('studyHistory');
+            //only show state's div(s)
+            divs.forEach(div=>div.classList.add('hidden'));
+            studyHistoryDiv.classList.remove('hidden');
+        }else if (stateObj._state === 'notes'){
+            console.log('notes');
+            //only show state's div(s)
+            divs.forEach(div=>div.classList.add('hidden'));
+            notesDiv.classList.remove('hidden');
         }
     },
     renderClock(){
@@ -367,6 +385,8 @@ export const customError = (error) => {
         h2Message = translations[lang]['min_length_alert'];
     } else if (error === 'sessionLength'){
         h2Message = translations[lang]['session_length_error'];
+    } else if (error === 'construction'){
+        h2Message = translations[lang]['construction'];
     }
     alertDiv.classList.remove('hidden');
     alertH2.textContent = h2Message;
