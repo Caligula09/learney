@@ -1,4 +1,4 @@
-import { StudySubject, subArrObj, sessionArray, sortSubs, sortTasks } from './classModule.js';
+import { StudySubject, subArrObj, sessionArray, sortSubs, sortTasks, sortSubsByCriteria } from './classModule.js';
 import renderObject from './renderModule.js';
 import { inputCollector, subGenFunction, taskGenFunction, customError, editObject } from './renderModule.js';
 
@@ -329,6 +329,59 @@ const eventListeners = [
         event: "click",
         handle: () => {
             state.state = 'notes';
+        }
+    }
+    ,{
+        target: "#filterBtn",
+        event: "click",
+        handle: () => {
+            document.getElementById('outerFilter').classList.remove('hidden');
+        }
+    }
+    //filter button listeners
+    ,{
+        target: "#filterDone",
+        event: "click",
+        handle: () => {
+            document.getElementById('outerFilter').classList.add('hidden');
+            subArrObj.subArray.forEach(sub => sortTasks(sub, 'done'));
+            localStorage.setItem('subArray', JSON.stringify(subArrObj.subArray));
+            subGenFunction(subArrObj.subArray, document.getElementById('subUlDivExtended'), true);
+            console.log(subArrObj.subArray);
+        }
+    }
+    ,{
+        target: "#filterDate",
+        event: "click",
+        handle: () => {
+            document.getElementById('outerFilter').classList.add('hidden');
+            let copySubArray = subArrObj.subArray;
+            sortSubsByCriteria(copySubArray, 'dueDate');
+            copySubArray.forEach(sub=> sortTasks(sub, 'dueDate'));
+            subGenFunction(copySubArray, document.getElementById('subUlDivExtended'), true);
+            console.log(copySubArray);
+        }
+    }
+    ,{
+        target: "#filterPrio",
+        event: "click",
+        handle: () => {
+            document.getElementById('outerFilter').classList.add('hidden');
+            let copySubArray = subArrObj.subArray;
+            sortSubsByCriteria(copySubArray, 'urgency');
+            copySubArray.forEach(sub=>sortTasks(sub, 'priority'));
+            subGenFunction(copySubArray, document.getElementById('subUlDivExtended'), true);
+            console.log(copySubArray);
+        }
+    }
+    ,{
+        target: "#filterDescription",
+        event: "click",
+        handle: () => {
+            document.getElementById('outerFilter').classList.add('hidden');
+            subArrObj.subArray.forEach(sub => sortTasks(sub, 'description'));
+            subGenFunction(subArrObj.subArray, document.getElementById('subUlDivExtended'), true);
+            console.log(subArrObj.subArray);
         }
     }
     /*

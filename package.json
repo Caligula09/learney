@@ -1,0 +1,23 @@
+{
+  "name": "quidey",
+  "version": "1.0.0",
+  "description": "Quidey WebSite",
+  "homepage": "https://github.com/masekowsky-ee/quidey#readme",
+  "bugs": {
+    "url": "https://github.com/masekowsky-ee/quidey/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masekowsky-ee/quidey.git"
+  },
+  "license": "ISC",
+  "author": "Eesge Masekowsky",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "mocha": "^8.1.3"
+  }
+}

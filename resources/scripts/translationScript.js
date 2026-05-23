@@ -131,6 +131,10 @@ const translations = {
         calendar: 'Kalender',
         study_history: 'Historie',
         notes: 'Notizen',
+        description_li: 'Beschreibung',
+        prio: 'Priorität',
+        unfinished: 'Offen',
+        date_li: "Datum",
 
         //alerts
         no_double_alert: "Du kannst das selbe Fach nicht zwei Mal eingeben. Bitte nutze etwas anderes.",
@@ -279,6 +283,10 @@ const translations = {
         calendar: 'Calendar',
         study_history: 'History',
         notes: 'Notes',
+        description_li: 'Description',
+        prio: 'Priority',
+        unfinished: 'Unfinished',
+        date_li: "Date",
 
         //alerts
         no_double_alert: "You can't enter the same subject twice. Please use something else.",

@@ -621,7 +621,7 @@ input[type="checkbox"]{
     z-index: 2001;
 }
 
-#alertDiv, #editDiv{
+#alertDiv, #editDiv, #filterDiv{
     width: 80%;
     height: auto;
     max-width: 20rem;
@@ -779,4 +779,8 @@ button:active{
     position: absolute;
     top: 0;
     right: 0;
+}
+
+#filterBtn{
+    right: 4rem;
 }

@@ -76,21 +76,27 @@ function addTask(name, sub){
     new Task(name, sub);
 }
 
-function sortTasks(sub,criteria){
-    if (criteria === 'done'){
-    sub.tasks.sort((a,b)=>{
-        return a.criteria - b.criteria;
-    });
+function sortTasks(sub, criteria) {
+    const validCriteria = ['done', 'dueDate', 'priority', 'description'];
+    if (validCriteria.includes(criteria)) {
+        sub.tasks.sort((a, b) => {
+            if (a[criteria] < b[criteria]) return -1;
+            if (a[criteria] > b[criteria]) return 1;
+            return 0;
+        });
     }
 }
 
-function calcDaysLeft(sub){
-    const today = new Date();
-    const timeDiff = new Date(sub.dueDate) - today;
-    sub.daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+export function sortSubsByCriteria(array, criteria){
+    const validCriteria = ['dueDate', 'urgency'];
+    if (validCriteria.includes(criteria)) {
+        array.sort((a, b) => {
+            if (a[criteria] < b[criteria]) return -1;
+            if (a[criteria] > b[criteria]) return 1;
+            return 0;
+        });
+    }
 }
-
-//
 
 const sortSubs = () => {
     subArrObj.subArray.forEach(sub => {
@@ -102,6 +108,14 @@ const sortSubs = () => {
     subArrObj.subArray.sort(compareUrgency);
     console.log("New Sorted SubArray: " , subArrObj.subArray);
 }
+
+function calcDaysLeft(sub){
+    const today = new Date();
+    const timeDiff = new Date(sub.dueDate) - today;
+    sub.daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+}
+
+//
 
 export { StudySubject, Task };
 export { calcUrgency, addTask, sortTasks, calcDaysLeft, sortSubs };
