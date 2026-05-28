@@ -417,7 +417,7 @@ const sortSubs = () => {
 const nextSessionOnClick = () => {
     if (sessionObject.counting === false){
         sessionObject.next();
-        let secsToStudy;
+        let secsToStudy;  
         //check for current state and assign minutes
         if(sessionObject.state === 'study'){
             secsToStudy = sessionObject.sessionLength * 60;
