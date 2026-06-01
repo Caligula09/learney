@@ -1,4 +1,4 @@
-import { subArrObj, removeSub } from "./classModule.js";
+import { arrObj, removeSub } from "./classModule.js";
 import { Task, StudySubject, sortTasks, sortSubs } from "./classModule.js";
 // DOM elements
 //div & container & element selectors
@@ -28,16 +28,10 @@ const subTaskList = document.getElementById('subTaskList');
 const timerMins = document.getElementById('timerMins');
 const timerSecs = document.getElementById('timerSecs');
 const alertH2 = document.getElementById('alertH2');
-
+const studyHistoryUl = document.getElementById('studyHistoryUl');
 const currentTask = document.getElementById('currentTask');
 const stateH1 = document.getElementById('stateH1');
 //button & input selectors
-const addNewSubBtn = document.getElementById('addNewSub');
-const startSessionBtn = document.getElementById('startSession');
-const endSessionBtn = document.getElementById('endSession');
-const nextSessionBtn = document.getElementById('nextSession');
-const skipSessionBtn = document.getElementById('skipSession');
-const alertOkBtn = document.getElementById('alertOkButton');
 const leftSessionBtn = document.getElementById('leftSessionBtn');
 const rightSessionBtn = document.getElementById('rightSessionBtn');
 
@@ -50,7 +44,6 @@ const subDateInput = document.getElementById('dateInput');
 const subConfidenceInput = document.getElementById('confidenceInput');
 
 const breaksYes = document.getElementById('breaksYes');
-const inSessionTaskAdder = document.getElementById('inSessionTaskAdder'); //  ?
 
 export const subGenFunction = (subArr, container, bool) => {
     container.innerHTML = "";
@@ -75,9 +68,9 @@ export const subGenFunction = (subArr, container, bool) => {
             deleteSubBtn.insertAdjacentHTML('beforeend', '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M261-120q-24.75 0-42.37-17.63Q201-155.25 201-180v-570h-11q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h158q0-13 8.63-21.5 8.62-8.5 21.37-8.5h204q12.75 0 21.38 8.62Q612-822.75 612-810h158q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5h-11v570q0 24.75-17.62 42.37Q723.75-120 699-120H261Zm438-630H261v570h438v-570ZM418.5-274.63q8.5-8.62 8.5-21.37v-339q0-12.75-8.68-21.38-8.67-8.62-21.5-8.62-12.82 0-21.32 8.62-8.5 8.63-8.5 21.38v339q0 12.75 8.68 21.37 8.67 8.63 21.5 8.63 12.82 0 21.32-8.63Zm166 0q8.5-8.62 8.5-21.37v-339q0-12.75-8.68-21.38-8.67-8.62-21.5-8.62-12.82 0-21.32 8.62-8.5 8.63-8.5 21.38v339q0 12.75 8.68 21.37 8.67 8.63 21.5 8.63 12.82 0 21.32-8.63ZM261-750v570-570Z"/></svg>');
             deleteSubBtn.addEventListener('click', () => {
                 subDiv.remove();
-                subArrObj.subArray = subArrObj.subArray.filter(subA => subA.name !== sub.name);
-                localStorage.setItem('subArray', JSON.stringify(subArrObj.subArray));
-                console.log(subArrObj.subArray);
+                arrObj.subArray = arrObj.subArray.filter(subA => subA.name !== sub.name);
+                localStorage.setItem('subArray', JSON.stringify(arrObj.subArray));
+                console.log(arrObj.subArray);
 
             });
             subHeadDiv.appendChild(deleteSubBtn);
@@ -134,12 +127,39 @@ const addTaskEventFunction = (container, sub) => {
                 const newTask = new Task(taskInput.value.toLowerCase().trim(), sub);
                 taskInput.remove();
                 sub.openTaskInput = false;
-                localStorage.setItem('subArray', JSON.stringify(subArrObj.subArray));
+                localStorage.setItem('subArray', JSON.stringify(arrObj.subArray));
                 generateTaskLi(container, newTask, sub);
             } else {
                 customError('taskMinLength')
             }
         }
+    });
+}
+
+const generateStudyHistory = () => {
+    studyHistoryUl.innerHTML = '';
+    const sessionArray = JSON.parse(localStorage.getItem('sessionArray')) ?? [ ];
+    sessionArray.forEach(session => {
+        const li = document.createElement('li');
+        const dateP = document.createElement('p');
+        const timeP = document.createElement('p');
+        const studiedUl = document.createElement('ul');
+
+        dateP.textContent = session.date;
+        timeP.textContent = `${translations[lang].time_studied}${Math.floor(session.totalTime / 3600).toString().padStart(2, '0')}:${Math.floor((session.totalTime % 3600) / 60).toString().padStart(2, '0')}`;
+
+        for(let sub of session.subjects){
+            const subLi = document.createElement('li');
+            const subNameP = document.createElement('p');
+            subNameP.textContent = sub.name;
+            subLi.appendChild(subNameP);
+            studiedUl.appendChild(subLi);
+        }
+
+        studyHistoryUl.appendChild(li);
+        li.appendChild(dateP);
+        li.appendChild(timeP);
+        li.appendChild(studiedUl);
     });
 }
 
@@ -162,7 +182,7 @@ export const generateTaskLi = (ul, task, sub) => {
         li.remove();
         //remove from task array
         sub.tasks = sub.tasks.filter(task => task.name !== p.textContent.toLowerCase().trim());
-        localStorage.setItem('subArray', JSON.stringify(subArrObj.subArray));
+        localStorage.setItem('subArray', JSON.stringify(arrObj.subArray));
         console.log(sub.tasks);
     });
     li.appendChild(p);
@@ -178,7 +198,7 @@ export const generateTaskLi = (ul, task, sub) => {
             p.style.textDecoration = 'none';
         }
         sortTasks(sub, 'done');
-        localStorage.setItem('subArray', JSON.stringify(subArrObj.subArray));
+        localStorage.setItem('subArray', JSON.stringify(arrObj.subArray));
     });
     //edit btn
     const editBtn = document.createElement('button');
@@ -201,7 +221,7 @@ const renderObject = {
             divs.forEach(div=>div.classList.add('hidden'));
             homeDivs.forEach(div=>div.classList.remove('hidden'));
             subUl.innerHTML = '';
-            subGenFunction(subArrObj.subArray, subUl, false);
+            subGenFunction(arrObj.subArray, subUl, false);
         } else if (stateObj._state === 'session'){
             console.log('session');
             //only show state's div(s)
@@ -217,7 +237,7 @@ const renderObject = {
             div6extended.classList.remove('hidden');
             //generate subs with tasks
             subUlDivExtended.innerHTML = '';
-            subGenFunction(subArrObj.subArray, subUlDivExtended, true);
+            subGenFunction(arrObj.subArray, subUlDivExtended, true);
         } else if (stateObj._state === 'calendar'){
             console.log('calendar');
             //only show state's div(s)
@@ -228,6 +248,7 @@ const renderObject = {
             //only show state's div(s)
             divs.forEach(div=>div.classList.add('hidden'));
             studyHistoryDiv.classList.remove('hidden');
+            generateStudyHistory();
         }else if (stateObj._state === 'notes'){
             console.log('notes');
             //only show state's div(s)
@@ -254,9 +275,9 @@ const renderObject = {
         timeH1.textContent = time;
     },
     renderSessionSubject(stateObj){
-        currentTask.textContent = subArrObj.subArray[0].name.toUpperCase();
+        currentTask.textContent = arrObj.subArray[0].name.toUpperCase();
         subTaskList.innerHTML = '';
-        taskGenFunction(subTaskList, subArrObj.subArray[0], subTaskList);
+        taskGenFunction(subTaskList, arrObj.subArray[0], subTaskList);
         stateH1.textContent = stateObj.session.nextObjective.toUpperCase();
         if(stateObj.session.nextObjective === 'study'){
             stateH1.textContent = translations[lang]['study'];

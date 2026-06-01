@@ -1,9 +1,8 @@
-export const subArrObj = { subArray: [] };
-export let sessionArray = [];
+export const arrObj = { subArray: [], sessionArray: [] };
 //sub array
 export function removeSub(sub){
-    subArrObj.subArray = subArrObj.subArray.filter(subA => subA.name !== sub.name);
-    console.log(subArrObj.subArray);
+    arrObj.subArray = arrObj.subArray.filter(subA => subA.name !== sub.name);
+    console.log(arrObj.subArray);
 }
 
 //classes
@@ -23,8 +22,8 @@ class StudySubject {
         calcDaysLeft(this);
         calcUrgency(this);
 
-        subArrObj.subArray.push(this);
-        console.log(subArrObj.subArray);
+        arrObj.subArray.push(this);
+        console.log(arrObj.subArray);
     }
 /*
     addSession(timeSpent) {
@@ -99,14 +98,14 @@ export function sortSubsByCriteria(array, criteria){
 }
 
 const sortSubs = () => {
-    subArrObj.subArray.forEach(sub => {
+    arrObj.subArray.forEach(sub => {
         calcUrgency(sub);
     });
     const compareUrgency = (a,b) => {
         return a.urgency - b.urgency ;
     }
-    subArrObj.subArray.sort(compareUrgency);
-    console.log("New Sorted SubArray: " , subArrObj.subArray);
+    arrObj.subArray.sort(compareUrgency);
+    console.log("New Sorted SubArray: " , arrObj.subArray);
 }
 
 function calcDaysLeft(sub){

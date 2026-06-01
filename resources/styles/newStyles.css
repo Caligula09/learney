@@ -261,6 +261,17 @@ main div{
     padding: 0;
 }
 
+#studyHistoryUl{
+    overflow-y: scroll;
+    height: 60%;
+    width: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
 #div6 h2{
     margin: 0;
     width: 70%;

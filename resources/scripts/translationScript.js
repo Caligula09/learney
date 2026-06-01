@@ -135,6 +135,7 @@ const translations = {
         prio: 'Priorität',
         unfinished: 'Offen',
         date_li: "Datum",
+        time_studied: "Lernzeit: ",
 
         //alerts
         no_double_alert: "Du kannst das selbe Fach nicht zwei Mal eingeben. Bitte nutze etwas anderes.",

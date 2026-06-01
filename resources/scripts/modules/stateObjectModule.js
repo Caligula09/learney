@@ -1,4 +1,4 @@
-import { StudySubject, subArrObj, sessionArray, sortSubs, sortTasks, sortSubsByCriteria } from './classModule.js';
+import { StudySubject, arrObj, sortSubs, sortTasks, sortSubsByCriteria } from './classModule.js';
 import renderObject from './renderModule.js';
 import { inputCollector, subGenFunction, taskGenFunction, customError, editObject } from './renderModule.js';
 
@@ -19,9 +19,11 @@ const intervalFunction = (stateObj, objective) => {
                     stateObj.session.incBreaksDone();
                 }else{
                     stateObj.session.incSessionsDone();
-                    subArrObj.subArray[0].practicedAmount ++;
+                    arrObj.subArray[0].practicedAmount ++;
                     sortSubs();
                     renderObject.renderSessionSubject(state);
+                    studiedSubjects.push(stateObj.session._subject);
+                    console.log('studiedSubjects');
                 }
                 console.log(stateObj.session);
             }
@@ -32,10 +34,14 @@ const intervalFunction = (stateObj, objective) => {
     }, 1000);
 }
 
+let studiedSubjects = [];
+
 const saveSession = () => {
-    sessionArray.push(
-        {date: new Date(Date.now()).toISOString().split('T')[0], totalTime: state.session._timeSpent,}
+    arrObj.sessionArray.push(
+        {date: new Date(Date.now()).toISOString().split('T')[0], totalTime: state.session._timeSpent, subjects: studiedSubjects}
     );
+    localStorage.setItem('sessionArray', JSON.stringify(arrObj.sessionArray));
+    studiedSubjects = [];
 }
 
 export const state = {
@@ -58,7 +64,7 @@ export const state = {
         renderObject.renderStates(this);
     },
     session: {
-        _subject: subArrObj.subArray[0],
+        _subject: arrObj.subArray[0],
         _breaks: null,
         _timeSpent: 0,
         _sessionAmount: 0,
@@ -88,7 +94,7 @@ export const state = {
         finished: false,
         subjectsStudied: [],
         reset(){
-            this._subject = subArrObj.subArray[0];
+            this._subject = arrObj.subArray[0];
             this._breaks = null;
             this._timeSpent= 0;
             this._sessionAmount= 0;
@@ -103,7 +109,7 @@ export const state = {
             this.subjectsStudied = [];
         },
         setSubject(){
-            this._subject = subArrObj.subArray[0];
+            this._subject = arrObj.subArray[0];
         },
         set breaks(bool){
             if(bool === true || bool === false){
@@ -162,7 +168,7 @@ export const state = {
             }else if (this._sessionsDone === this._sessionAmount){
                 this.finish();
             }
-            localStorage.setItem("subArray",JSON.stringify(subArrObj.subArray));
+            localStorage.setItem("subArray",JSON.stringify(arrObj.subArray));
             renderObject.sessionNavButtons(state);
         },
 
@@ -180,7 +186,6 @@ export const state = {
                     console.log('_intervalState === 0');
                     if(this._breaks){ //breaks - check if session or break
                         if(this._sessionsDone === this._breaksDone){//when coming out of a break
-
                             this.interval.setIntervalState(this._sessionLength);
                             this.nextObjective = 'study';
                             intervalFunction(state, 'study');
@@ -188,7 +193,6 @@ export const state = {
                             if(this._sessionsDone === this._sessionAmount){
                                 this.finish();
                             } else {
-                                this.subjectsStudied.push(this._subject);
                                 this.setSubject();
                                 this.interval.setIntervalState(this._breakLength);
                                 this.nextObjective = 'break';
@@ -196,7 +200,7 @@ export const state = {
                             }
                         }
                     }else{ //no breaks - instant continue
-                        subArrObj.subArray[0].practicedAmount ++;
+                        arrObj.subArray[0].practicedAmount ++;
                         sortSubs();
                         this.setSubject();
                         this.interval.setIntervalState(this._sessionLength);
@@ -245,11 +249,11 @@ const eventListeners = [
         target: "#addNewSub",
         event: "click",
         handle: () => {
-            if(subArrObj.subArray.every(sub => sub.name !== inputCollector.subName()) && inputCollector.subName()){
+            if(arrObj.subArray.every(sub => sub.name !== inputCollector.subName()) && inputCollector.subName()){
                 if(new Date(inputCollector.subDate()) > new Date(Date.now())){
                     let newSub = new StudySubject(inputCollector.subName(), inputCollector.subDate(), inputCollector.subConfidence());
-                    localStorage.setItem("subArray",JSON.stringify(subArrObj.subArray))
-                    subGenFunction(subArrObj.subArray, document.getElementById('subUl'), false);
+                    localStorage.setItem("subArray",JSON.stringify(arrObj.subArray))
+                    subGenFunction(arrObj.subArray, document.getElementById('subUl'), false);
                     inputCollector.clearSubInputs();
                 } else{
                     customError('newSubDate');
@@ -288,22 +292,22 @@ const eventListeners = [
         handle: () => {
                 if(new Date(document.getElementById('editDateInput').value) > new Date(Date.now())){
                     if(editObject.type === 'subject'){
-                        const index = subArrObj.subArray.indexOf(editObject.subject);
-                        subArrObj.subArray[index].dueDate = document.getElementById('editDateInput').value;
+                        const index = arrObj.subArray.indexOf(editObject.subject);
+                        arrObj.subArray[index].dueDate = document.getElementById('editDateInput').value;
                     }else{
-                        const index = subArrObj.subArray.indexOf(editObject.subject);
-                        const taskIndex = subArrObj.subArray[index].tasks.indexOf(editObject.object);
-                        subArrObj.subArray[index].tasks[taskIndex].name = document.getElementById('editNameInput').value.toLowerCase().trim();
-                        subArrObj.subArray[index].tasks[taskIndex].dueDate = document.getElementById('editDateInput').value;
-                        subArrObj.subArray[index].tasks[taskIndex].description = document.getElementById('editDescriptionInput').value;
+                        const index = arrObj.subArray.indexOf(editObject.subject);
+                        const taskIndex = arrObj.subArray[index].tasks.indexOf(editObject.object);
+                        arrObj.subArray[index].tasks[taskIndex].name = document.getElementById('editNameInput').value.toLowerCase().trim();
+                        arrObj.subArray[index].tasks[taskIndex].dueDate = document.getElementById('editDateInput').value;
+                        arrObj.subArray[index].tasks[taskIndex].description = document.getElementById('editDescriptionInput').value;
                     }
                     document.getElementById('editInputs').innerHTML = '';
                     document.getElementById('outerEdit').classList.add('hidden');
-                    localStorage.setItem("subArray",JSON.stringify(subArrObj.subArray));
+                    localStorage.setItem("subArray",JSON.stringify(arrObj.subArray));
                     if(state._state === 'home'){
-                        subGenFunction(subArrObj.subArray, subUl, false);
+                        subGenFunction(arrObj.subArray, subUl, false);
                     } else{
-                        subGenFunction(subArrObj.subArray, subUlDivExtended, true);
+                        subGenFunction(arrObj.subArray, subUlDivExtended, true);
                     }
                 } else{
                     customError('newSubDate');
@@ -344,10 +348,10 @@ const eventListeners = [
         event: "click",
         handle: () => {
             document.getElementById('outerFilter').classList.add('hidden');
-            subArrObj.subArray.forEach(sub => sortTasks(sub, 'done'));
-            localStorage.setItem('subArray', JSON.stringify(subArrObj.subArray));
-            subGenFunction(subArrObj.subArray, document.getElementById('subUlDivExtended'), true);
-            console.log(subArrObj.subArray);
+            arrObj.subArray.forEach(sub => sortTasks(sub, 'done'));
+            localStorage.setItem('subArray', JSON.stringify(arrObj.subArray));
+            subGenFunction(arrObj.subArray, document.getElementById('subUlDivExtended'), true);
+            console.log(arrObj.subArray);
         }
     }
     ,{
@@ -355,7 +359,7 @@ const eventListeners = [
         event: "click",
         handle: () => {
             document.getElementById('outerFilter').classList.add('hidden');
-            let copySubArray = subArrObj.subArray;
+            let copySubArray = arrObj.subArray;
             sortSubsByCriteria(copySubArray, 'dueDate');
             copySubArray.forEach(sub=> sortTasks(sub, 'dueDate'));
             subGenFunction(copySubArray, document.getElementById('subUlDivExtended'), true);
@@ -367,7 +371,7 @@ const eventListeners = [
         event: "click",
         handle: () => {
             document.getElementById('outerFilter').classList.add('hidden');
-            let copySubArray = subArrObj.subArray;
+            let copySubArray = arrObj.subArray;
             sortSubsByCriteria(copySubArray, 'urgency');
             copySubArray.forEach(sub=>sortTasks(sub, 'priority'));
             subGenFunction(copySubArray, document.getElementById('subUlDivExtended'), true);
@@ -379,9 +383,9 @@ const eventListeners = [
         event: "click",
         handle: () => {
             document.getElementById('outerFilter').classList.add('hidden');
-            subArrObj.subArray.forEach(sub => sortTasks(sub, 'description'));
-            subGenFunction(subArrObj.subArray, document.getElementById('subUlDivExtended'), true);
-            console.log(subArrObj.subArray);
+            arrObj.subArray.forEach(sub => sortTasks(sub, 'description'));
+            subGenFunction(arrObj.subArray, document.getElementById('subUlDivExtended'), true);
+            console.log(arrObj.subArray);
         }
     }
     /*
