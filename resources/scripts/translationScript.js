@@ -288,6 +288,7 @@ const translations = {
         prio: 'Priority',
         unfinished: 'Unfinished',
         date_li: "Date",
+        time_studied: "Time studied: ",
 
         //alerts
         no_double_alert: "You can't enter the same subject twice. Please use something else.",
